@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>FinnTheHuman.png</file>
+        <file>assets/background_layer_1.png</file>
+        <file>assets/background_layer_2.png</file>
+        <file>assets/background_layer_3.png</file>
+        <file>assets/Dirt_Block.png</file>
+        <file>assets/Long_Dirt_Block.png</file>
+        <file>assets/Underground.png</file>
+        <file>assets/Finn2.png</file>
+    </qresource>
+</RCC>
