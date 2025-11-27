@@ -41,7 +41,7 @@ void Player::fall()
         //I removed return form if
     }
     else
-        isOnGround = true; // I am stil not sure about that!
+        isOnGround = true; // This is to allow the player to jump again, without it the player will get permission to jump while in the air
 }
 
 void Player::jump()
@@ -63,39 +63,43 @@ void Player::move_right()
         if(xVelocity > maxspeed){
             xVelocity = maxspeed;
         }
-        speed = xVelocity;
+        if (x() < middleX) {
+            setPos(x() + xVelocity, y());  //normal until reaching middle
+        } else {
+            emit scrollWorldLeft(xVelocity);  //in middle, scroll the world instead
+        }
     }
     else if(!running_forward && !running_backward){
         xVelocity -= acceleration;
         if(xVelocity < 0){
             xVelocity = 0;
         }
-        speed = xVelocity;
-    }
-
-    // Scrolling logic
-    if (x() < middleX) {
-        setPos(x() + speed, y());  //normal until reaching middle
-    } else {
-        emit scrollWorld(speed);  //in middle, scroll the world instead
+        setPos(x() + xVelocity, y());
     }
 }
 
 void Player::move_left()
 {
+    int position = 200;
+
     if(running_backward){
         xVelocity += acceleration;
         if(xVelocity > maxspeed){
             xVelocity = maxspeed;
         }
-        this->setPos(x() - xVelocity, y());
+        if(x() > position){
+            setPos(x() - xVelocity, y());
+        }
+        else {
+            emit scrollWorldRight(xVelocity);
+        }
     }
     else if(!running_backward && !running_forward){
         xVelocity -= acceleration;
         if(xVelocity < 0){
             xVelocity = 0;
         }
-        this->setPos(x() - xVelocity , y());
+         setPos(x() - xVelocity, y());
     }
 }
 

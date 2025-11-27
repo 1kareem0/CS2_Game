@@ -12,14 +12,18 @@ class Game : public QGraphicsView
 {
     Q_OBJECT
     QGraphicsScene * scene;
+    QGraphicsView * view;
     Player * player;
     QList<Block*> blocks;
-    QGraphicsPixmapItem* currentBackground;  // Changed: single background instead of list
+    QGraphicsPixmapItem * Background_layer1;
+    QGraphicsPixmapItem * Background_layer2;
+    QGraphicsPixmapItem * Background_layer3;
 public:
     Game(QWidget* parent = nullptr);
 
 public slots:
-    void scrollWorld(int speed);
+    void scrollWorldLeft(int speed);
+    void scrollWorldRight(int speed);
 };
 
 #endif // GAME_H

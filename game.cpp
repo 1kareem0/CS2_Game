@@ -7,19 +7,19 @@ Game::Game(QWidget *parent)
     scene = new QGraphicsScene();
     this->setScene(scene);
 
+    view = new QGraphicsView(scene);
+    view->setSceneRect(0, 0, 800, 600);
+
     scene->setSceneRect(0, 0, 1080, 500);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setFixedSize(1080, 500);
 
-    // Only use background_layer_1 for Level 1
-    QPixmap BG_layer1(":/assets/background_layer_1.png");
-    QPixmap BG_layer2(":/assets/background_layer_2.png");
-    QPixmap BG_layer3(":/assets/background_layer_3.png");
+    // Only use background_layer_1 for Level :
 
-    QGraphicsPixmapItem *Background_layer1 = new QGraphicsPixmapItem(BG_layer1);
-    QGraphicsPixmapItem *Background_layer2 = new QGraphicsPixmapItem(BG_layer2);
-    QGraphicsPixmapItem *Background_layer3 = new QGraphicsPixmapItem(BG_layer3);
+    Background_layer1 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_1.png"));
+    Background_layer2 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_2.png"));
+    Background_layer3 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_3.png"));
 
     Background_layer1->setScale(3.4);
     Background_layer2->setScale(3.4);
@@ -33,15 +33,8 @@ Game::Game(QWidget *parent)
     scene->addItem(Background_layer2);
     scene->addItem(Background_layer3);
 
-    currentBackground = Background_layer1;
-
 
     // Ground blocks - continuous floor
-    for(int i = 0; i < 3000; i += 70){
-        Block *dirt = new Block(nullptr, i);
-        scene->addItem(dirt);
-        blocks.append(dirt);
-    }
     for(int i = 0; i < 3000; i += 70){
         Block *dirt = new Block(nullptr, i);
         scene->addItem(dirt);
@@ -63,19 +56,25 @@ Game::Game(QWidget *parent)
     scene->addItem(player);
 
     // Connect scrolling
-    connect(player, &Player::scrollWorld, this, &Game::scrollWorld);
+    connect(player, &Player::scrollWorldLeft, this, &Game::scrollWorldLeft);
+    connect(player, &Player::scrollWorldRight, this, &Game::scrollWorldRight);
 
     QTimer * timer = new QTimer(this);
     timer->start(16);
     connect(timer, &QTimer::timeout, player, &Player::fall);
 }
 
-void Game::scrollWorld(int speed)
+void Game::scrollWorldLeft(int speed)
 {
     // Move all blocks
     for(Block* block : blocks){
         block->setPos(block->x() - speed, block->y());
     }
-    // Scroll only the current background (layer_1) with parallax effect
-    currentBackground->setPos(currentBackground->x() - speed * 0.3, currentBackground->y());
+}
+
+void Game::scrollWorldRight(int speed)
+{
+    for(Block* block : blocks){
+        block->setPos(block->x() + speed, block->y());
+    }
 }

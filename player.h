@@ -25,7 +25,8 @@ public:
     Player(QGraphicsItem * parent = nullptr);
 
 signals:    // Add this section
-    void scrollWorld(int speed);
+    void scrollWorldLeft(int speed);
+    void scrollWorldRight(int speed);
 
 public slots:
     bool onBlock();
