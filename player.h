@@ -24,6 +24,9 @@ class Player : public QObject ,public QGraphicsPixmapItem
 public:
     Player(QGraphicsItem * parent = nullptr);
 
+signals:    // Add this section
+    void scrollWorld(int speed);
+
 public slots:
     bool onBlock();
     void fall();

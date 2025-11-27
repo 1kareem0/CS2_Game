@@ -8,10 +8,3 @@ Block::Block(QGraphicsItem *parent, int x)
     this->setPos(-30 + x, 400);
     this->setScale(1.5);
 }
-
-Block::Block(const QPixmap &pixmap, QGraphicsItem *parent)
-{
-    setPixmap(pixmap);
-    this->setPos(0,0);
-    this->setScale(0.5);
-}

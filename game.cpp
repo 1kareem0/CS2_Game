@@ -1,8 +1,10 @@
 #include "game.h"
+#include <QTimer>
+#include <qlist.h>
 
 Game::Game(QWidget *parent)
 {
-    scene = new  QGraphicsScene();
+    scene = new QGraphicsScene();
     this->setScene(scene);
 
     scene->setSceneRect(0, 0, 1080, 500);
@@ -10,6 +12,7 @@ Game::Game(QWidget *parent)
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setFixedSize(1080, 500);
 
+    // Only use background_layer_1 for Level 1
     QPixmap BG_layer1(":/assets/background_layer_1.png");
     QPixmap BG_layer2(":/assets/background_layer_2.png");
     QPixmap BG_layer3(":/assets/background_layer_3.png");
@@ -30,18 +33,49 @@ Game::Game(QWidget *parent)
     scene->addItem(Background_layer2);
     scene->addItem(Background_layer3);
 
-    for(int i = 0; i < 1000; i += 70){
-    Block * dirt = new Block(nullptr, i);
-    scene->addItem(dirt);
+    currentBackground = Background_layer1;
+
+
+    // Ground blocks - continuous floor
+    for(int i = 0; i < 3000; i += 70){
+        Block *dirt = new Block(nullptr, i);
+        scene->addItem(dirt);
+        blocks.append(dirt);
+    }
+    for(int i = 0; i < 3000; i += 70){
+        Block *dirt = new Block(nullptr, i);
+        scene->addItem(dirt);
+        blocks.append(dirt);
     }
 
+
+    // floating blocks at x=1000
+    for(int i = 0; i < 3; i++){
+        Block *platform3 = new Block(nullptr, 1000 + (i * 70));
+        platform3->setY(300);
+        scene->addItem(platform3);
+        blocks.append(platform3);
+    }
+
+
+    // Add player
     player = new Player();
     scene->addItem(player);
+
+    // Connect scrolling
+    connect(player, &Player::scrollWorld, this, &Game::scrollWorld);
 
     QTimer * timer = new QTimer(this);
     timer->start(16);
     connect(timer, &QTimer::timeout, player, &Player::fall);
-
 }
 
-
+void Game::scrollWorld(int speed)
+{
+    // Move all blocks
+    for(Block* block : blocks){
+        block->setPos(block->x() - speed, block->y());
+    }
+    // Scroll only the current background (layer_1) with parallax effect
+    currentBackground->setPos(currentBackground->x() - speed * 0.3, currentBackground->y());
+}

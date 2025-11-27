@@ -13,9 +13,13 @@ class Game : public QGraphicsView
     Q_OBJECT
     QGraphicsScene * scene;
     Player * player;
+    QList<Block*> blocks;
+    QGraphicsPixmapItem* currentBackground;  // Changed: single background instead of list
 public:
     Game(QWidget* parent = nullptr);
 
+public slots:
+    void scrollWorld(int speed);
 };
 
 #endif // GAME_H

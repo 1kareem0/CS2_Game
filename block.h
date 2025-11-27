@@ -14,6 +14,7 @@ class Block : public QObject,public QGraphicsPixmapItem
 public:
     Block(QGraphicsItem* parent = nullptr, int x = 0);
     Block(const QPixmap& pixmap, QGraphicsItem* parent = nullptr);
+    void approach();
 };
 
 #endif // BLOCK_H

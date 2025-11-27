@@ -1,4 +1,5 @@
 #include "player.h"
+#include "game.h"
 
 Player::Player(QGraphicsItem * parent) {
     setPixmap(QPixmap(":/assets/Finn2.png"));
@@ -30,16 +31,17 @@ void Player::fall()
 {
 
     if(!onBlock() || jumping){
-    yVelocity += gravity;
-    this->setPos(x(), y()+yVelocity);
-    if(onBlock()){
-        yVelocity = 0;
-        isOnGround = true;
-        jumping = false;
-        return;
+        yVelocity += gravity;
+        this->setPos(x(), y()+yVelocity);
+        if(onBlock()){
+            yVelocity = 0;
+            isOnGround = true;
+            jumping = false;
+        }
+        //I removed return form if
     }
-
-    }
+    else
+        isOnGround = true; // I am stil not sure about that!
 }
 
 void Player::jump()
@@ -53,19 +55,29 @@ void Player::jump()
 
 void Player::move_right()
 {
+    int middleX = 540; // middle of screen
+    int speed = 0;
+
     if(running_forward){
         xVelocity += acceleration;
         if(xVelocity > maxspeed){
             xVelocity = maxspeed;
         }
-        this->setPos(x() + xVelocity, y());
+        speed = xVelocity;
     }
     else if(!running_forward && !running_backward){
         xVelocity -= acceleration;
         if(xVelocity < 0){
             xVelocity = 0;
         }
-        this->setPos(x() + xVelocity , y());
+        speed = xVelocity;
+    }
+
+    // Scrolling logic
+    if (x() < middleX) {
+        setPos(x() + speed, y());  //normal until reaching middle
+    } else {
+        emit scrollWorld(speed);  //in middle, scroll the world instead
     }
 }
 
@@ -80,7 +92,7 @@ void Player::move_left()
     }
     else if(!running_backward && !running_forward){
         xVelocity -= acceleration;
-       if(xVelocity < 0){
+        if(xVelocity < 0){
             xVelocity = 0;
         }
         this->setPos(x() - xVelocity , y());
@@ -112,6 +124,5 @@ void Player::keyReleaseEvent(QKeyEvent *event)
         running_backward = false;
     }
 }
-
 
 
