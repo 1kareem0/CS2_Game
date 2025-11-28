@@ -5,6 +5,7 @@
 #include <QGraphicsItem>
 #include <QObject>
 #include "block.h"
+#include "obstacle.h"
 #include <QKeyEvent>
 #include <QTimer>
 
@@ -21,8 +22,13 @@ class Player : public QObject ,public QGraphicsPixmapItem
     bool running_forward = false;
     bool running_backward = false;
 
+    int lives = 3;
+
+    QList<Block *> blocks;
+
 public:
     Player(QGraphicsItem * parent = nullptr);
+    void setBlocks(const QList<Block*>& b);
 
 signals:    // Add this section
     void scrollWorldLeft(int speed);
@@ -34,6 +40,8 @@ public slots:
     void jump();
     void move_right();
     void move_left();
+    bool predictCollision(float newX, float newY);
+    void snapPlayerRight();
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;

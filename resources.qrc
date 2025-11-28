@@ -10,5 +10,14 @@
         <file>assets/Finn2.png</file>
         <file>assets/LemonGrap.png</file>
         <file>assets/Lich.png</file>
+        <file>assets/Ratating_Spike_8.png</file>
+        <file>assets/Rotating_Spike_1.png</file>
+        <file>assets/Rotating_Spike_2.png</file>
+        <file>assets/Rotating_Spike_3.png</file>
+        <file>assets/Rotating_Spike_4.png</file>
+        <file>assets/Rotating_Spike_5.png</file>
+        <file>assets/Rotating_Spike_6.png</file>
+        <file>assets/Rotating_Spike_7.png</file>
+        <file>assets/Spike.png</file>
     </qresource>
 </RCC>

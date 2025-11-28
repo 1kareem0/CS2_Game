@@ -25,6 +25,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         player.h player.cpp
         resources.qrc
         block.h block.cpp
+        obstacle.h obstacle.cpp
+        level.h level.cpp
+        checkpoint.h checkpoint.cpp
     )
 else()
     if(ANDROID)

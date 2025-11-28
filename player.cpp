@@ -14,6 +14,11 @@ Player::Player(QGraphicsItem * parent) {
     connect(running, &QTimer::timeout, this, &Player::move_left);
 }
 
+void Player::setBlocks(const QList<Block *> &b)
+{
+    this->blocks = b;
+}
+
 bool Player::onBlock()
 {
     QList<QGraphicsItem *> collisions = collidingItems();
@@ -33,16 +38,22 @@ void Player::fall()
     if(!onBlock() || jumping){
         yVelocity += gravity;
         this->setPos(x(), y()+yVelocity);
-        if(onBlock()){
+        if(onBlock() && yVelocity > 0){
             yVelocity = 0;
             isOnGround = true;
             jumping = false;
         }
-        //I removed return form if
+        else if(onBlock() && yVelocity < 0){
+            this->setPos(x(), y() - (yVelocity + 8));
+            isOnGround = false;
+        }
+        else if( yVelocity == 0 && !onBlock()){
+            isOnGround = false;
+            jumping = false;
+        }
     }
-    else
-        isOnGround = true; // This is to allow the player to jump again, without it the player will get permission to jump while in the air
 }
+
 
 void Player::jump()
 {
@@ -68,6 +79,7 @@ void Player::move_right()
         } else {
             emit scrollWorldLeft(xVelocity);  //in middle, scroll the world instead
         }
+
     }
     else if(!running_forward && !running_backward){
         xVelocity -= acceleration;
@@ -103,6 +115,7 @@ void Player::move_left()
     }
 }
 
+
 void Player::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Up) {
@@ -129,4 +142,34 @@ void Player::keyReleaseEvent(QKeyEvent *event)
     }
 }
 
+bool Player::predictCollision(float newX, float newY)
+{
+    QRectF nextRect = boundingRect().translated(newX, newY);
+
+    for (auto block : blocks) {
+        QRectF blockRect = block->boundingRect().translated(block->pos());
+
+        bool horizontalCollision = nextRect.right() > blockRect.left() &&  nextRect.left() < blockRect.right();
+
+        qreal tolerance = 5.0;
+        qreal playerMiddle = nextRect.top() + nextRect.height() / 2;
+        bool verticalOverlap = playerMiddle > blockRect.top() - tolerance && playerMiddle < blockRect.bottom() + tolerance;
+
+        if (horizontalCollision && verticalOverlap)
+            return true;
+    }
+    return false;
+}
+
+void Player::snapPlayerRight()
+{
+    for (auto block : blocks) {
+        QRectF blockRect = block->boundingRect().translated(block->pos());
+        QRectF playerRect = boundingRect().translated(pos());
+        if (playerRect.intersects(blockRect)) {
+            setX(blockRect.right() - blockRect.width());
+            return;
+        }
+    }
+}
 
