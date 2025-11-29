@@ -1,7 +1,7 @@
 #include "game.h"
 #include <QTimer>
 #include <qlist.h>
-
+#include "player.h"
 Game::Game(QWidget *parent)
 {
     scene = new QGraphicsScene();
@@ -59,22 +59,57 @@ Game::Game(QWidget *parent)
     connect(player, &Player::scrollWorldLeft, this, &Game::scrollWorldLeft);
     connect(player, &Player::scrollWorldRight, this, &Game::scrollWorldRight);
 
+    //connecting the conditiones to teh screen.
+    connect(player, &Player::playerDied, this, &Game::onPlayerDied);
+    connect(player, &Player::gameOver, this, &Game::onGameOver);
+
     QTimer * timer = new QTimer(this);
     timer->start(16);
     connect(timer, &QTimer::timeout, player, &Player::fall);
-}
 
+    //The enemies part
+    int enemyPositions[] = {600, 1000, 1500, 2000, 2500};
+
+    for(int i = 0; i < 5; i++){
+        enemy *e = new enemy();
+        e->setPos(enemyPositions[i], 200);  // All on ground level
+        scene->addItem(e);
+        enemies.append(e);
+    }
+
+    //showing the number of lives on teh screen.
+    livesText = new QGraphicsTextItem();
+    livesText->setDefaultTextColor(Qt::white);
+    livesText->setFont(QFont("Arial", 20));
+    livesText->setZValue(100);  // Always on top
+    scene->addItem(livesText);
+    //updateLivesDisplay();
+
+}
 void Game::scrollWorldLeft(int speed)
 {
     // Move all blocks
     for(Block* block : blocks){
         block->setPos(block->x() - speed, block->y());
-    }
 }
-
-void Game::scrollWorldRight(int speed)
+}
+ void Game::scrollWorldRight(int speed)
 {
     for(Block* block : blocks){
         block->setPos(block->x() + speed, block->y());
     }
+    for(enemy* e : enemies){
+        e->setPos(e->x() + speed, e->y());
+    }
 }
+
+void Game::onPlayerDied()
+{
+    qDebug() << "Player died!";
+}
+
+void Game::onGameOver()
+{
+    qDebug() << "Game Over";
+}
+

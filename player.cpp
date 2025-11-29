@@ -12,7 +12,31 @@ Player::Player(QGraphicsItem * parent) {
     running->start(16);
     connect(running, &QTimer::timeout, this, &Player::move_right);
     connect(running, &QTimer::timeout, this, &Player::move_left);
+    lives = 6;
 }
+
+void Player::loseLife()
+{
+    lives--;
+    if(lives > 0){
+        emit playerDied();  // Signal to restart level
+    } else {
+        emit gameOver();    // Signal game over
+    }
+}
+
+int Player::getLives()
+{
+    return lives;
+}
+
+//to repeat teh level.
+void Player::resetPosition()
+{
+    setPos(50, 100);
+    yVelocity = 0;
+}
+
 
 bool Player::onBlock()
 {

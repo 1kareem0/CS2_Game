@@ -20,13 +20,19 @@ class Player : public QObject ,public QGraphicsPixmapItem
     float acceleration = 0.4;
     bool running_forward = false;
     bool running_backward = false;
+    int lives;
 
 public:
     Player(QGraphicsItem * parent = nullptr);
+    void loseLife();
+    int getLives();
+    void resetPosition();
 
-signals:    // Add this section
+signals:
     void scrollWorldLeft(int speed);
     void scrollWorldRight(int speed);
+    void playerDied();
+    void gameOver();
 
 public slots:
     bool onBlock();
