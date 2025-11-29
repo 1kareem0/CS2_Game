@@ -38,10 +38,7 @@ level::level(QObject *parent, int number) : QGraphicsScene(parent)
 
 void level::loadLevel1()
 {
-    QGraphicsPixmapItem *dot = new QGraphicsPixmapItem(QPixmap(":/assets/Spike.png"));
-    dot->setPos(30, 450);
-    //addItem(dot);
-
+    // Background and Scene setup (Moved from Game)
     QGraphicsPixmapItem *Background_layer1 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_1.png"));
     QGraphicsPixmapItem *Background_layer2 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_2.png"));
     QGraphicsPixmapItem *Background_layer3 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_3.png"));
@@ -95,6 +92,31 @@ void level::loadLevel1()
     // spike->setPos(70, 300);
     // addItem(spike);
 
+    //The enemy part
+    // Enemy 1
+    enemy *enemy1 = new enemy(nullptr, 500, 300);
+    enemy1->setBlocks(blocks);
+    enemy1->setBounds(300, 700);  // Set patrol range
+    addItem(enemy1);
+    enemies.append(enemy1);
+
+    // Enemy 2
+    enemy *enemy2 = new enemy(nullptr, 1200, 300);
+    enemy2->setBlocks(blocks);
+    enemy2->setBounds(1000, 1400);
+    addItem(enemy2);
+    enemies.append(enemy2);
+
+    // Enemy 3:
+
+    enemy *enemy3 = new enemy(nullptr, 1100, 200);
+    enemy3->setBlocks(blocks);
+    enemy3->setBounds(1000, 1200);  // Patrol on platform
+    addItem(enemy3);
+    enemies.append(enemy3);
+
+
+
     connect(player, &Player::restartLevel, this, &level::restartLevel);
     connect(player, &Player::restartFromCheckpoint, this, &level::restartFromCheckpoint);
     connect(player, &Player::scrollWorldLeft, this,  &level::scrollWorldLeft);
@@ -117,6 +139,11 @@ void level::scrollWorldLeft(int speed)
         for(Obstacle* obstacle : obstacles){
             obstacle->setPos(obstacle->x() - speed, obstacle->y());
         }
+        //I am not convinced with scrolling the enemies
+        for(enemy* e : enemies){
+            e->setPos(e->x() - speed, e->y());
+            e->setBounds(e->x() - 300, e->x() + 300);
+    }
 }
 
 void level::scrollWorldRight(int speed)
@@ -127,6 +154,9 @@ void level::scrollWorldRight(int speed)
         for(Obstacle* obstacle : obstacles){
             obstacle->setPos(obstacle->x() + speed, obstacle->y());
         }
+        //I might only keeping scrolling to the right
+        for(enemy* e : enemies){
+            e->setPos(e->x() + speed, e->y());
+            e->setBounds(e->x() - 300, e->x() + 300);
+        }
 }
-
-

@@ -7,6 +7,9 @@
 #include <QString>
 #include "player.h"
 #include <QDebug>
+#include "Obstacle.h"
+#include "block.h"
+#include "enemy.h"
 
 class level : public QGraphicsScene
 {
@@ -14,6 +17,7 @@ public:
     Player * player;
     QList<Block*> blocks;
     QList<Obstacle *> obstacles;
+    QList<enemy*> enemies;
 
 public slots:
     void restartLevel();

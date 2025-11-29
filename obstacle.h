@@ -1,8 +1,6 @@
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
 
-
-
 #include <QGraphicsView>
 #include<QGraphicsScene>
 #include <QObject>

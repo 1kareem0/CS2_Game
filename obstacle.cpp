@@ -1,7 +1,5 @@
 #include "obstacle.h"
-
 #include "obstacle.h"
-#include <QDebug>
 
 Obstacle::Obstacle(const QList<QPixmap> &frames, int frameInterval, QGraphicsItem *parent)
     : frames(frames)
@@ -21,8 +19,6 @@ Obstacle::Obstacle(const QList<QPixmap> &frames, int frameInterval, QGraphicsIte
     connect(timer, &QTimer::timeout, this, &Obstacle::advanceFrame);
     timer->start(frameInterval);
 }
-
-
 
 QRectF Obstacle::boundingRect() const
 {

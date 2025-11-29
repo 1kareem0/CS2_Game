@@ -34,6 +34,7 @@ Player::Player(QGraphicsItem * parent) {
     running->start(16);
     connect(running, &QTimer::timeout, this, &Player::move_right);
     connect(running, &QTimer::timeout, this, &Player::move_left);
+    lives = 6;
 }
 
 bool Player::onBlock()

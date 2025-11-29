@@ -14,7 +14,10 @@ private:
 public:
     Game(QWidget* parent = nullptr);
 
-public slots:
+    void restartLevel();
+    void updateLivesDisplay();
+    void showGameOver();
+
 };
 
 #endif // GAME_H
