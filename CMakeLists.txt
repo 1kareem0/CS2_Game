@@ -26,7 +26,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         resources.qrc
         block.h block.cpp
         enemy.h enemy.cpp
-    )
+        obstacle.h obstacle.cpp
+        level.h level.cpp
+        checkpoint.h checkpoint.cpp)
 else()
     if(ANDROID)
         add_library(SuperMarioProject SHARED
