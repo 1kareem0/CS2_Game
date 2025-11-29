@@ -1,10 +1,32 @@
 #include "player.h"
 #include "game.h"
 
+void Player::setLives(int newLives)
+{
+    lives = newLives;
+}
+
+int Player::getLives() const
+{
+    return lives;
+}
+
+void Player::setLastcheckpoint(QPointF newLastcheckpoint)
+{
+    lastcheckpoint = newLastcheckpoint;
+}
+
+QPointF Player::getLastcheckpoint() const
+{
+    return lastcheckpoint;
+}
+
 Player::Player(QGraphicsItem * parent) {
     setPixmap(QPixmap(":/assets/Finn2.png"));
     this->setPos(30, 300);
     this->setScale(0.4);
+    this->lastcheckpoint.setX(30);
+    this->lastcheckpoint.setY(300);
     setFlag(QGraphicsItem::ItemIsFocusable);
     setFocus();
 
@@ -12,11 +34,6 @@ Player::Player(QGraphicsItem * parent) {
     running->start(16);
     connect(running, &QTimer::timeout, this, &Player::move_right);
     connect(running, &QTimer::timeout, this, &Player::move_left);
-}
-
-void Player::setBlocks(const QList<Block *> &b)
-{
-    this->blocks = b;
 }
 
 bool Player::onBlock()
@@ -105,7 +122,7 @@ void Player::move_left()
         else {
             emit scrollWorldRight(xVelocity);
         }
-    }
+        }
     else if(!running_backward && !running_forward){
         xVelocity -= acceleration;
         if(xVelocity < 0){
@@ -115,6 +132,46 @@ void Player::move_left()
     }
 }
 
+bool Player::hitObstacle()
+{
+    QList<QGraphicsItem *> collisions = collidingItems();
+    for(auto item : collisions){
+        Obstacle * obstacle = dynamic_cast<Obstacle *>(item);
+        if(obstacle){
+            return true;
+        }
+    }
+    return false;
+}
+
+void Player::damage()
+{
+    if(hitObstacle() || pos().y() > 460){
+        lives -= 1;
+        if(lives == 0){
+            emit restartLevel();
+        }
+        else{
+            if(lastcheckpoint.x() == 30 && lastcheckpoint.y() == 300){
+            emit restartLevel();
+            }
+            else{
+                emit restartFromCheckpoint();
+            }
+        }
+    }
+}
+
+void Player::hitCheckpoint()
+{
+    QList<QGraphicsItem *> collisions = collidingItems();
+    for(auto item : collisions){
+        checkpoint * cp= dynamic_cast<checkpoint *>(item);
+        if(cp){
+            lastcheckpoint = cp->pos();
+        }
+    }
+}
 
 void Player::keyPressEvent(QKeyEvent *event)
 {
@@ -142,34 +199,34 @@ void Player::keyReleaseEvent(QKeyEvent *event)
     }
 }
 
-bool Player::predictCollision(float newX, float newY)
-{
-    QRectF nextRect = boundingRect().translated(newX, newY);
+// bool Player::predictCollision(float newX, float newY)
+// {
+//     QRectF nextRect = boundingRect().translated(newX, newY);
 
-    for (auto block : blocks) {
-        QRectF blockRect = block->boundingRect().translated(block->pos());
+//     for (auto  block : blocks) {
+//         QRectF blockRect = block->boundingRect().translated(block->pos());
 
-        bool horizontalCollision = nextRect.right() > blockRect.left() &&  nextRect.left() < blockRect.right();
+//         bool horizontalCollision = nextRect.right() > blockRect.left() &&  nextRect.left() < blockRect.right();
 
-        qreal tolerance = 5.0;
-        qreal playerMiddle = nextRect.top() + nextRect.height() / 2;
-        bool verticalOverlap = playerMiddle > blockRect.top() - tolerance && playerMiddle < blockRect.bottom() + tolerance;
+//         qreal tolerance = 5.0;
+//         qreal playerMiddle = nextRect.top() + nextRect.height() / 2;
+//         bool verticalOverlap = playerMiddle > blockRect.top() - tolerance && playerMiddle < blockRect.bottom() + tolerance;
 
-        if (horizontalCollision && verticalOverlap)
-            return true;
-    }
-    return false;
-}
+//         if (horizontalCollision && verticalOverlap)
+//             return true;
+//     }
+//     return false;
+// }
 
-void Player::snapPlayerRight()
-{
-    for (auto block : blocks) {
-        QRectF blockRect = block->boundingRect().translated(block->pos());
-        QRectF playerRect = boundingRect().translated(pos());
-        if (playerRect.intersects(blockRect)) {
-            setX(blockRect.right() - blockRect.width());
-            return;
-        }
-    }
-}
+// void Player::snapPlayerRight()
+// {
+//     for (auto block : blocks) {
+//         QRectF blockRect = block->boundingRect().translated(block->pos());
+//         QRectF playerRect = boundingRect().translated(pos());
+//         if (playerRect.intersects(blockRect)) {
+//             setX(blockRect.right() - blockRect.width());
+//             return;
+//         }
+//     }
+// }
 

@@ -6,16 +6,25 @@
 #include <QTimer>
 #include <QString>
 #include "player.h"
-#include "Obstacle.h"
+#include <QDebug>
 
 class level : public QGraphicsScene
 {
 public:
     Player * player;
     QList<Block*> blocks;
+    QList<Obstacle *> obstacles;
+
+public slots:
+    void restartLevel();
+    void restartFromCheckpoint();
+    void scrollWorldLeft(int speed);
+    void scrollWorldRight(int speed);
+
 public:
     level(QObject *parent = nullptr, int number  =1);
     void loadLevel1();
+    bool isCheckpoint();
 };
 
 #endif // LEVEL_H

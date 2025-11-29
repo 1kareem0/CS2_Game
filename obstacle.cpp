@@ -1,10 +1,10 @@
 #include "obstacle.h"
 
 #include "obstacle.h"
-#include <QDebug> // For optional debugging
+#include <QDebug>
 
 Obstacle::Obstacle(const QList<QPixmap> &frames, int frameInterval, QGraphicsItem *parent)
-    : Block(), frames(frames)
+    : frames(frames)
 {
     currentFrame = 0;
 
@@ -17,12 +17,12 @@ Obstacle::Obstacle(const QList<QPixmap> &frames, int frameInterval, QGraphicsIte
         if (pix.height() > maxHeight) maxHeight = pix.height();
     }
 
-
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &Obstacle::advanceFrame);
     timer->start(frameInterval);
-
 }
+
+
 
 QRectF Obstacle::boundingRect() const
 {
@@ -52,7 +52,7 @@ void Obstacle::advanceFrame()
     setPixmap(frames[currentFrame]);
 }
 
-
-Obstacle::Obstacle(const QPixmap& pixmap, QGraphicsItem* parent) : Block(pixmap, nullptr, 0)
+Obstacle::Obstacle(const QPixmap& pixmap, QGraphicsItem* parent)
 {
+    setPixmap(pixmap);
 }

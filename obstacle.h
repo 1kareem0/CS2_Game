@@ -3,13 +3,17 @@
 
 
 
-#include "block.h"
+#include <QGraphicsView>
+#include<QGraphicsScene>
+#include <QObject>
+#include <QGraphicsItem>
+#include <QGraphicsPixmapItem>
 #include <QTimer>
 
-class Obstacle : public  Block
+class Obstacle : public  QObject,public QGraphicsPixmapItem
 {
     Q_OBJECT
-    QList<QPixmap> frames;   // store animation frames
+    QList<QPixmap> frames;
     int currentFrame = 0;
     int maxWidth = 0;
     int maxHeight = 0;

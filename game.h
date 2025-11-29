@@ -15,8 +15,6 @@ public:
     Game(QWidget* parent = nullptr);
 
 public slots:
-    void scrollWorldLeft(int speed);
-    void scrollWorldRight(int speed);
 };
 
 #endif // GAME_H
