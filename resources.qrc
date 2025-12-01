@@ -20,5 +20,7 @@
         <file>assets/Rotating_Spike_7.png</file>
         <file>assets/Spike.png</file>
         <file>assets/Spikes.png</file>
+        <file>assets/Finn_life.png</file>
+        <file>assets/Coin.gif</file>
     </qresource>
 </RCC>

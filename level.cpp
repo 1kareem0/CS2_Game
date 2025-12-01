@@ -109,12 +109,17 @@ void level::loadLevel1()
     addItem(enemy3);
     enemies.append(enemy3);
 
+    //Lives:
+    for(auto it = player->lives.begin(); it != player->lives.end(); it++){
+        addItem(*it);
+    }
 
 
     connect(player, &Player::restartLevel, this, &level::restartLevel);
     connect(player, &Player::restartFromCheckpoint, this, &level::restartFromCheckpoint);
     connect(player, &Player::scrollWorldLeft, this,  &level::scrollWorldLeft);
     connect(player, &Player::scrollWorldRight, this, &level::scrollWorldRight);
+    connect(player, &Player::reduceLife, this, &level::reduceLife);
 
     QTimer * timer = new QTimer(this);
     timer->start(16);
@@ -153,4 +158,9 @@ void level::scrollWorldRight(int speed)
             e->setPos(e->x() + speed, e->y());
             e->setBounds(e->x() - 300, e->x() + 300);
         }
+}
+
+void level::reduceLife()
+{
+    removeItem(player->lives.back());
 }

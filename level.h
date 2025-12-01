@@ -18,12 +18,14 @@ public:
     QList<Block*> blocks;
     QList<Obstacle *> obstacles;
     QList<enemy*> enemies;
+    std::vector<Life *> lives;
 
 public slots:
     void restartLevel();
     void restartFromCheckpoint();
     void scrollWorldLeft(int speed);
     void scrollWorldRight(int speed);
+    void reduceLife();
 
 public:
     level(QObject *parent = nullptr, int number  =1);

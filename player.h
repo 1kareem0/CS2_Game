@@ -10,6 +10,7 @@
 #include <QKeyEvent>
 #include <QTimer>
 #include<cmath>
+#include "life.h"
 
 class Player : public QObject ,public QGraphicsPixmapItem
 {
@@ -23,7 +24,7 @@ class Player : public QObject ,public QGraphicsPixmapItem
     float acceleration = 0.4;
     bool running_forward = false;
     bool running_backward = false;
-    int lives = 3;
+    std::vector<Life *> lives;
     QPointF lastcheckpoint;
 
     friend class level;
@@ -31,17 +32,19 @@ class Player : public QObject ,public QGraphicsPixmapItem
 public:
     Player(QGraphicsItem * parent = nullptr);
 
-    void setLives(int newLives);
     void setLastcheckpoint(QPointF newLastcheckpoint);
 
-    int getLives() const;
     QPointF getLastcheckpoint() const;
+
+    std::vector<Life *> getLives();
+    void setLives(const std::vector<Life *> &newLives);
 
 signals:
     void scrollWorldLeft(int speed);
     void scrollWorldRight(int speed);
     void restartLevel();
     void restartFromCheckpoint();
+    void reduceLife();
 
 public slots:
     bool onBlock();
