@@ -20,6 +20,7 @@ public:
     QList<Obstacle *> obstacles;
     QList<enemy*> enemies;
     QList<Coin*> coins;
+    std::vector<Life *> lives;
 
 public slots:
     void restartLevel();
@@ -27,6 +28,7 @@ public slots:
     void handlePlayerDeath();
     void scrollWorldLeft(int speed);
     void scrollWorldRight(int speed);
+    void reduceLife();
 
 public:
     level(QObject *parent = nullptr, int number  =1);

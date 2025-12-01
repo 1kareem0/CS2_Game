@@ -118,6 +118,10 @@ void level::loadLevel1()
     coin1->setPos(300, 250);
     addItem(coin1);
 
+    //Lives:
+    for(auto it = player->lives.begin(); it != player->lives.end(); it++){
+        addItem(*it);
+    }
 
     Coin* coin2 = new Coin(nullptr, 1);
     coin2->setPos(600, 250);
@@ -129,6 +133,7 @@ void level::loadLevel1()
     connect(player, &Player::restartFromCheckpoint, this, &level::restartFromCheckpoint);
     connect(player, &Player::scrollWorldLeft, this,  &level::scrollWorldLeft);
     connect(player, &Player::scrollWorldRight, this, &level::scrollWorldRight);
+    connect(player, &Player::reduceLife, this, &level::reduceLife);
 
     QTimer * timer = new QTimer(this);
     timer->start(16);
@@ -182,4 +187,9 @@ level::level(QObject *parent, int number): QGraphicsScene(parent)
     if(number == 1){
         loadLevel1();
     }
+}
+
+void level::reduceLife()
+{
+    removeItem(player->lives.back());
 }

@@ -4,8 +4,8 @@
 #include <QString>
 #include <QTimer>
 Coin::Coin(QGraphicsItem *parent, int type): QGraphicsPixmapItem(parent) {
-    setPixmap(QPixmap(":/assets/LemonGrap.png"));
-    setScale(0.25);
+    setPixmap(QPixmap(":/assets/Coin.gif"));
+    setScale(0.1);
 
     QTimer* TakenChecker= new QTimer(this);
     TakenChecker->start(5);

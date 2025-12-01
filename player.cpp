@@ -1,18 +1,7 @@
 #include "player.h"
 #include "game.h"
 
-//the static data member
 int Player::totalCoins = 0;
-
-void Player::setLives(int newLives)
-{
-    lives = newLives;
-}
-
-int Player::getLives() const
-{
-    return lives;
-}
 
 void Player::setLastcheckpoint(QPointF newLastcheckpoint)
 {
@@ -39,6 +28,16 @@ void Player::resetCoins()
     totalCoins = 0;
 }
 
+std::vector<Life *> Player::getLives()
+{
+    return lives;
+}
+
+void Player::setLives(const std::vector<Life *> &newLives)
+{
+    lives = newLives;
+}
+
 Player::Player(QGraphicsItem * parent) {
     setPixmap(QPixmap(":/assets/Finn2.png"));
     this->setPos(30, 300);
@@ -48,11 +47,16 @@ Player::Player(QGraphicsItem * parent) {
     setFlag(QGraphicsItem::ItemIsFocusable);
     setFocus();
 
+    for(int i = 0; i < 180; i += 60){
+        Life *life = new Life(nullptr, i);
+        lives.push_back(life);
+    }
+
     QTimer * running = new QTimer(this);
     running->start(16);
     connect(running, &QTimer::timeout, this, &Player::move_right);
     connect(running, &QTimer::timeout, this, &Player::move_left);
-    lives = 6;
+
 }
 
 bool Player::onBlock()
@@ -169,8 +173,10 @@ bool Player::hitObstacle()
 void Player::damage()
 {
     if(hitObstacle() || pos().y() > 460){
-        lives -= 1;
-        if(lives == 0){
+        emit reduceLife();
+        delete lives.back();
+        lives.pop_back();
+        if(lives.empty()){
             emit restartLevel();
         }
         else{
