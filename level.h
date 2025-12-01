@@ -22,6 +22,7 @@ public:
 public slots:
     void restartLevel();
     void restartFromCheckpoint();
+    void handlePlayerDeath();
     void scrollWorldLeft(int speed);
     void scrollWorldRight(int speed);
 
