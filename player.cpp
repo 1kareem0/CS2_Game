@@ -1,6 +1,9 @@
 #include "player.h"
 #include "game.h"
 
+//the static data member
+int Player::totalCoins = 0;
+
 void Player::setLives(int newLives)
 {
     lives = newLives;
@@ -19,6 +22,21 @@ void Player::setLastcheckpoint(QPointF newLastcheckpoint)
 QPointF Player::getLastcheckpoint() const
 {
     return lastcheckpoint;
+}
+
+int Player::getTotalCoins()
+{
+      return totalCoins;
+}
+
+void Player::addCoins(int amount)
+{
+    totalCoins += amount;
+}
+
+void Player::resetCoins()
+{
+    totalCoins = 0;
 }
 
 Player::Player(QGraphicsItem * parent) {

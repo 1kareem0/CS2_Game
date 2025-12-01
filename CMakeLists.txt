@@ -28,7 +28,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         enemy.h enemy.cpp
         obstacle.h obstacle.cpp
         level.h level.cpp
-        checkpoint.h checkpoint.cpp)
+        checkpoint.h checkpoint.cpp
+        coin.h coin.cpp)
 else()
     if(ANDROID)
         add_library(SuperMarioProject SHARED

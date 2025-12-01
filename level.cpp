@@ -114,6 +114,16 @@ void level::loadLevel1()
 
     // connect(enemy3, &enemy::hitPlayer, this, &level::handlePlayerDeath);
 
+    Coin* coin1 = new Coin(nullptr, 0);
+    coin1->setPos(300, 250);
+    addItem(coin1);
+
+
+    Coin* coin2 = new Coin(nullptr, 1);
+    coin2->setPos(600, 250);
+    addItem(coin2);
+    coins.append(coin2);
+    coins.append(coin1);
 
     connect(player, &Player::restartLevel, this, &level::restartLevel);
     connect(player, &Player::restartFromCheckpoint, this, &level::restartFromCheckpoint);
@@ -142,6 +152,9 @@ void level::scrollWorldLeft(int speed)
             e->setPos(e->x() - speed, e->y());
             e->setBounds(e->x() - 300, e->x() + 300);
     }
+        for(Coin* e : coins){
+            e->setPos(e->x() - speed, e->y());
+        }
 }
 
 void level::scrollWorldRight(int speed)
@@ -156,6 +169,9 @@ void level::scrollWorldRight(int speed)
         for(enemy* e : enemies){
             e->setPos(e->x() + speed, e->y());
             e->setBounds(e->x() - 300, e->x() + 300);
+        }
+        for(Coin* e : coins){
+            e->setPos(e->x() + speed, e->y());
         }
 }
 

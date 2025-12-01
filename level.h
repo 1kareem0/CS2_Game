@@ -10,6 +10,7 @@
 #include "Obstacle.h"
 #include "block.h"
 #include "enemy.h"
+#include "coin.h"
 
 class level : public QGraphicsScene
 {
@@ -18,6 +19,7 @@ public:
     QList<Block*> blocks;
     QList<Obstacle *> obstacles;
     QList<enemy*> enemies;
+    QList<Coin*> coins;
 
 public slots:
     void restartLevel();
