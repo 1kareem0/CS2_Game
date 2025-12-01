@@ -11,6 +11,7 @@
 #include "block.h"
 #include "enemy.h"
 #include "coin.h"
+#include "score.h"
 
 class level : public QGraphicsScene
 {
@@ -21,6 +22,7 @@ public:
     QList<enemy*> enemies;
     QList<Coin*> coins;
     std::vector<Life *> lives;
+    Score* score;
 
 public slots:
     void restartLevel();

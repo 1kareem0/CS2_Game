@@ -14,6 +14,7 @@ Coin::Coin(QGraphicsItem *parent, int type): QGraphicsPixmapItem(parent) {
 void Coin::CheckTaken()
 {
     QList<QGraphicsItem*> colliding_items= collidingItems();
+    value = 1;
     for(auto it: std::as_const(colliding_items))
     {
         if(typeid(*it)==typeid(Player))

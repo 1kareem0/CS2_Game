@@ -6,6 +6,7 @@ void level::restartLevel() {
         Block * block = dynamic_cast<Block *>(item);
         Obstacle * obstacle = dynamic_cast<Obstacle *>(item);
         enemy * e = dynamic_cast<enemy *>(item);
+        Coin * c = dynamic_cast<Coin*>(item);
         if(block || obstacle || e){
             removeItem(item);
             delete item;
@@ -15,7 +16,9 @@ void level::restartLevel() {
    blocks.clear();
    obstacles.clear();
    enemies.clear();
-
+   coins.clear();
+   delete score;
+   lives.clear();
     removeItem(player);
     delete player;
 
@@ -117,17 +120,16 @@ void level::loadLevel1()
     Coin* coin1 = new Coin(nullptr, 0);
     coin1->setPos(300, 250);
     addItem(coin1);
+    coins.append(coin1);
+    Coin* coin2 = new Coin(nullptr, 1);
+    coin2->setPos(600, 250);
+    addItem(coin2);
+    coins.append(coin2);
 
     //Lives:
     for(auto it = player->lives.begin(); it != player->lives.end(); it++){
         addItem(*it);
     }
-
-    Coin* coin2 = new Coin(nullptr, 1);
-    coin2->setPos(600, 250);
-    addItem(coin2);
-    coins.append(coin2);
-    coins.append(coin1);
 
     connect(player, &Player::restartLevel, this, &level::restartLevel);
     connect(player, &Player::restartFromCheckpoint, this, &level::restartFromCheckpoint);
@@ -142,6 +144,11 @@ void level::loadLevel1()
     connect(timer, &QTimer::timeout, player, &Player::hitCheckpoint);
     connect(timer, &QTimer::timeout, player, &Player::damage);
 
+    score = new Score();
+    score->setPos(10, 10);  // top-left corner
+    addItem(score);
+    connect(coin1, &Coin::taken, score, &Score::increase);
+    connect(coin2, &Coin::taken, score, &Score::increase);
 }
 
 void level::scrollWorldLeft(int speed)
