@@ -29,7 +29,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         obstacle.h obstacle.cpp
         level.h level.cpp
         checkpoint.h checkpoint.cpp
+        coin.h coin.cpp
         life.h life.cpp)
+
 else()
     if(ANDROID)
         add_library(SuperMarioProject SHARED

@@ -30,14 +30,13 @@ void level::restartFromCheckpoint()
     player->yVelocity = 0;
 }
 
-level::level(QObject *parent, int number) : QGraphicsScene(parent)
+void level::handlePlayerDeath()
 {
-    this->setSceneRect(0, 0, 1080, 500);
-
-    if(number == 1){
-        loadLevel1();
-    }
+    qDebug() << "Player died! Restarting from checkpoint...";
+    restartLevel();
 }
+
+
 
 void level::loadLevel1()
 {
@@ -95,20 +94,30 @@ void level::loadLevel1()
     addItem(enemy1);
     enemies.append(enemy1);
 
-    // Enemy 2
-    enemy *enemy2 = new enemy(nullptr, 1200, 300);
-    enemy2->setBlocks(blocks);
-    enemy2->setBounds(1000, 1400);
-    addItem(enemy2);
-    enemies.append(enemy2);
+    connect(enemy1, &enemy::hitPlayer, this, &level::handlePlayerDeath);
 
-    // Enemy 3:
+    // // Enemy 2
+    // enemy *enemy2 = new enemy(nullptr, 1200, 300);
+    // enemy2->setBlocks(blocks);
+    // enemy2->setBounds(1000, 1400);
+    // addItem(enemy2);
+    // enemies.append(enemy2);
 
-    enemy *enemy3 = new enemy(nullptr, 1100, 200);
-    enemy3->setBlocks(blocks);
-    enemy3->setBounds(1000, 1200);  // Patrol on platform
-    addItem(enemy3);
-    enemies.append(enemy3);
+    // connect(enemy2, &enemy::hitPlayer, this, &level::handlePlayerDeath);
+
+    // // Enemy 3:
+
+    // enemy *enemy3 = new enemy(nullptr, 1100, 200);
+    // enemy3->setBlocks(blocks);
+    // enemy3->setBounds(1000, 1200);  // Patrol on platform
+    // addItem(enemy3);
+    // enemies.append(enemy3);
+
+    // connect(enemy3, &enemy::hitPlayer, this, &level::handlePlayerDeath);
+
+    Coin* coin1 = new Coin(nullptr, 0);
+    coin1->setPos(300, 250);
+    addItem(coin1);
 
     //Lives:
     for(auto it = player->lives.begin(); it != player->lives.end(); it++){
@@ -131,6 +140,13 @@ void level::loadLevel1()
     addItem(cp1);
     addItem(cp2);
     addItem(cp3);
+
+    Coin* coin2 = new Coin(nullptr, 1);
+    coin2->setPos(600, 250);
+    addItem(coin2);
+    coins.append(coin2);
+    coins.append(coin1);
+
 
     connect(player, &Player::restartLevel, this, &level::restartLevel);
     connect(player, &Player::restartFromCheckpoint, this, &level::restartFromCheckpoint);
@@ -159,9 +175,14 @@ void level::scrollWorldLeft(int speed)
         for(enemy* e : enemies){
             e->setPos(e->x() - speed, e->y());
             e->setBounds(e->x() - 300, e->x() + 300);
-    }
+        }
+
         for(checkpoint* cp : cps){
             cp->setPos(cp->x() - speed, cp->y());
+        }
+
+        for(Coin* e : coins){
+            e->setPos(e->x() - speed, e->y());
         }
 }
 
@@ -178,9 +199,23 @@ void level::scrollWorldRight(int speed)
             e->setPos(e->x() + speed, e->y());
             e->setBounds(e->x() - 300, e->x() + 300);
         }
+
         for(checkpoint* cp : cps){
             cp->setPos(cp->x() + speed, cp->y());
         }
+
+        for(Coin* e : coins){
+            e->setPos(e->x() + speed, e->y());
+        }
+}
+
+level::level(QObject *parent, int number): QGraphicsScene(parent)
+{
+    this->setSceneRect(0, 0, 1080, 500);
+
+    if(number == 1){
+        loadLevel1();
+    }
 }
 
 void level::reduceLife()

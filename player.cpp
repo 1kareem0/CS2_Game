@@ -1,6 +1,8 @@
 #include "player.h"
 #include "game.h"
 
+int Player::totalCoins = 0;
+
 void Player::setLastcheckpoint(QPointF newLastcheckpoint)
 {
     lastcheckpoint = newLastcheckpoint;
@@ -9,6 +11,21 @@ void Player::setLastcheckpoint(QPointF newLastcheckpoint)
 QPointF Player::getLastcheckpoint() const
 {
     return lastcheckpoint;
+}
+
+int Player::getTotalCoins()
+{
+      return totalCoins;
+}
+
+void Player::addCoins(int amount)
+{
+    totalCoins += amount;
+}
+
+void Player::resetCoins()
+{
+    totalCoins = 0;
 }
 
 std::vector<Life *> Player::getLives()

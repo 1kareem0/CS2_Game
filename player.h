@@ -7,6 +7,7 @@
 #include "block.h"
 #include "obstacle.h"
 #include "checkpoint.h"
+#include "coin.h"
 #include <QKeyEvent>
 #include <QTimer>
 #include<cmath>
@@ -26,6 +27,7 @@ class Player : public QObject ,public QGraphicsPixmapItem
     bool running_backward = false;
     std::vector<Life *> lives;
     QPointF lastcheckpoint;
+    static int totalCoins;
 
     friend class level;
 
@@ -36,6 +38,9 @@ public:
 
     QPointF getLastcheckpoint() const;
 
+    static int getTotalCoins();
+    static void addCoins(int amount);
+    static void resetCoins(); //the coins will be updated when the player die
     std::vector<Life *> getLives();
     void setLives(const std::vector<Life *> &newLives);
 

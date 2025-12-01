@@ -9,9 +9,10 @@
 
 class checkpoint : public QObject, public QGraphicsPixmapItem
 {
+    Q_OBJECT
 
 public:
-    checkpoint(QGraphicsItem *parent , QPointF pos);
+    checkpoint(QGraphicsItem *parent, float x, float y);
 };
 
 #endif // CHECKPOINT_H

@@ -10,6 +10,7 @@
 #include "Obstacle.h"
 #include "block.h"
 #include "enemy.h"
+#include "coin.h"
 
 class level : public QGraphicsScene
 {
@@ -20,10 +21,12 @@ public:
     QList<enemy*> enemies;
     QList<checkpoint *> cps;
     std::vector<QGraphicsPixmapItem*> uiLives;
+    QList<Coin*> coins;
 
 public slots:
     void restartLevel();
     void restartFromCheckpoint();
+    void handlePlayerDeath();
     void scrollWorldLeft(int speed);
     void scrollWorldRight(int speed);
     void reduceLife();

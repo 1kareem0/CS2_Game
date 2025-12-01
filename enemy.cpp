@@ -4,6 +4,7 @@
 #include <QList>
 #include "block.h"
 #include "player.h"
+
 enemy::enemy(QGraphicsItem *parent, double startX, double startY)
     : QGraphicsPixmapItem(parent),
     speed(2), direction(-1), yVelocity(0), gravity(0.5), leftBound(0), rightBound(0), canFall(true)
