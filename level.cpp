@@ -5,7 +5,8 @@ void level::restartLevel() {
     for(auto item : items()){
         Block * block = dynamic_cast<Block *>(item);
         Obstacle * obstacle = dynamic_cast<Obstacle *>(item);
-        if(block || obstacle){
+        enemy * e = dynamic_cast<enemy *>(item);
+        if(block || obstacle || e){
             removeItem(item);
             delete item;
         }
@@ -13,6 +14,7 @@ void level::restartLevel() {
 
    blocks.clear();
    obstacles.clear();
+   enemies.clear();
 
     removeItem(player);
     delete player;
@@ -65,7 +67,7 @@ void level::loadLevel1()
 
     for(int i = 0; i < 3; i++){
         Block *platform3 = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
-        platform3->setPos(-30 + 1000 + (i * 70), 300);
+        platform3->setPos(-30 + 1000 + (i * 70), 330);
         platform3->setScale(1.5);
         addItem(platform3);
         blocks.append(platform3);
@@ -75,22 +77,14 @@ void level::loadLevel1()
     player->setPos(30, 300);
     addItem(player);
 
-    // QList<QPixmap> frames;
-    // for(int i = 0; i < 8; i++){
-    //     QString f = ":/assets/Rotating_Spike_" + QString::number(i+1) +".png";
-    //     frames.append(QPixmap(f));
-    // }
-
-    // Obstacle * rotating_spikes = new Obstacle(frames, 100, nullptr);
-    // rotating_spikes->setPos(30, 300);
-    // addItem(rotating_spikes);
-
-    // QList<QPixmap> frame;
-    // frame.append(QPixmap(":/assets/Spike.png"));
-
-    // Obstacle *spike = new Obstacle(frame, 100 ,nullptr);
-    // spike->setPos(70, 300);
-    // addItem(spike);
+    //obstacles:
+    QList<QPixmap> f;
+    f.append(QPixmap(":/assets/Spikes.png"));
+    Obstacle * spikes = new Obstacle(f, 100 ,nullptr);
+    spikes->setPos(100, 400);
+    spikes->setScale(1);
+    obstacles.append(spikes);
+    //addItem(spikes);
 
     //The enemy part
     // Enemy 1

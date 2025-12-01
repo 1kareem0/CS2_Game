@@ -9,6 +9,7 @@
 #include "checkpoint.h"
 #include <QKeyEvent>
 #include <QTimer>
+#include<cmath>
 
 class Player : public QObject ,public QGraphicsPixmapItem
 {
@@ -49,8 +50,6 @@ public slots:
     void move_right();
     void move_left();
     void damage();
-    //bool predictCollision(float newX, float newY);
-    //void snapPlayerRight();
     bool hitObstacle();
     void hitCheckpoint();
 

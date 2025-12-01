@@ -43,10 +43,13 @@ bool Player::onBlock()
     for(auto item : collisions){
         Block * block = dynamic_cast<Block *>(item);
         if(block){
+            QRectF playerR = this->boundingRect().translated(this->pos());
+            QRectF blockR = block->boundingRect().translated(block->pos());
+            if(playerR.bottom() <= blockR.top() + 500){
             return true;
+            }
+            }
         }
-    }
-
     return false;
 }
 
@@ -199,35 +202,4 @@ void Player::keyReleaseEvent(QKeyEvent *event)
         running_backward = false;
     }
 }
-
-// bool Player::predictCollision(float newX, float newY)
-// {
-//     QRectF nextRect = boundingRect().translated(newX, newY);
-
-//     for (auto  block : blocks) {
-//         QRectF blockRect = block->boundingRect().translated(block->pos());
-
-//         bool horizontalCollision = nextRect.right() > blockRect.left() &&  nextRect.left() < blockRect.right();
-
-//         qreal tolerance = 5.0;
-//         qreal playerMiddle = nextRect.top() + nextRect.height() / 2;
-//         bool verticalOverlap = playerMiddle > blockRect.top() - tolerance && playerMiddle < blockRect.bottom() + tolerance;
-
-//         if (horizontalCollision && verticalOverlap)
-//             return true;
-//     }
-//     return false;
-// }
-
-// void Player::snapPlayerRight()
-// {
-//     for (auto block : blocks) {
-//         QRectF blockRect = block->boundingRect().translated(block->pos());
-//         QRectF playerRect = boundingRect().translated(pos());
-//         if (playerRect.intersects(blockRect)) {
-//             setX(blockRect.right() - blockRect.width());
-//             return;
-//         }
-//     }
-// }
 

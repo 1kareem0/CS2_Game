@@ -48,7 +48,7 @@ void Obstacle::advanceFrame()
     setPixmap(frames[currentFrame]);
 }
 
-Obstacle::Obstacle(const QPixmap& pixmap, QGraphicsItem* parent)
+Obstacle::Obstacle(const QPixmap& pixmap, QGraphicsItem* parent) : QGraphicsPixmapItem(pixmap, parent)
 {
-    setPixmap(pixmap);
+    setPixmap(QPixmap(pixmap));
 }
