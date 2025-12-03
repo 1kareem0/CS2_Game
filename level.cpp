@@ -1,5 +1,6 @@
 #include "level.h"
 #include <QGraphicsPixmapItem>
+#include <QDebug>
 
 void level::restartLevel() {
     for(auto item : items()){
@@ -131,6 +132,25 @@ void level::loadLevel1()
         addItem(*it);
     }
 
+
+    //checkpoints:
+    checkpoint * cp1 = new checkpoint(nullptr, 30, 360);
+    checkpoint * cp2 = new checkpoint(nullptr, 200, 360);
+    checkpoint * cp3 = new checkpoint(nullptr, 300, 360);
+
+    cp1->setScale(0.1);
+    cp2->setScale(0.1);
+    cp3->setScale(0.1);
+
+    cps.append(cp1);
+    cps.append(cp2);
+    cps.append(cp3);
+
+    addItem(cp1);
+    addItem(cp2);
+    addItem(cp3);
+
+
     connect(player, &Player::restartLevel, this, &level::restartLevel);
     connect(player, &Player::restartFromCheckpoint, this, &level::restartFromCheckpoint);
     connect(player, &Player::scrollWorldLeft, this,  &level::scrollWorldLeft);
@@ -163,7 +183,12 @@ void level::scrollWorldLeft(int speed)
         for(enemy* e : enemies){
             e->setPos(e->x() - speed, e->y());
             e->setBounds(e->x() - 300, e->x() + 300);
-    }
+        }
+
+        for(checkpoint* cp : cps){
+            cp->setPos(cp->x() - speed, cp->y());
+        }
+
         for(Coin* e : coins){
             e->setPos(e->x() - speed, e->y());
         }
@@ -182,6 +207,11 @@ void level::scrollWorldRight(int speed)
             e->setPos(e->x() + speed, e->y());
             e->setBounds(e->x() - 300, e->x() + 300);
         }
+
+        for(checkpoint* cp : cps){
+            cp->setPos(cp->x() + speed, cp->y());
+        }
+
         for(Coin* e : coins){
             e->setPos(e->x() + speed, e->y());
         }

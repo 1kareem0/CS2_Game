@@ -1,6 +1,7 @@
 #include "checkpoint.h"
 
-checkpoint::checkpoint(QGraphicsItem *parent, QPointF pos)
+checkpoint::checkpoint(QGraphicsItem *parent, float x, float y) :  QGraphicsPixmapItem(parent)
 {
-    setPos(pos);
+    setPixmap(QPixmap(":/assets/Flag.png"));
+    setPos(x, y);
 }

@@ -22,5 +22,6 @@
         <file>assets/Spikes.png</file>
         <file>assets/Finn_life.png</file>
         <file>assets/Coin.gif</file>
+        <file>assets/Flag.png</file>
     </qresource>
 </RCC>

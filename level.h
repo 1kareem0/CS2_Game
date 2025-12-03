@@ -20,9 +20,13 @@ public:
     QList<Block*> blocks;
     QList<Obstacle *> obstacles;
     QList<enemy*> enemies;
+    QList<checkpoint *> cps;
+    std::vector<QGraphicsPixmapItem*> uiLives;
     QList<Coin*> coins;
+
     std::vector<Life *> lives;
     Score* score;
+
 
 public slots:
     void restartLevel();
