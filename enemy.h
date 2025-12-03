@@ -24,16 +24,15 @@ private:
 public:
     enemy(QGraphicsItem *parent = nullptr, double startX = 0, double startY = 0);
 
-    // Physics
     void fall();
     bool onBlock();
 
-    // Movement and boundaries
     void checkBoundaries();
-    // void checkEdges();  // Check for platform edges to turn around
     void reverseDirection();
 
+    void checkPlayerCollision();
     // Setters
+
     void setBlocks(const QList<Block*>& b);
     void setBounds(double left, double right);
 
