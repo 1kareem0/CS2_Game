@@ -19,9 +19,9 @@ void level::restartLevel() {
    cps.clear();
 
     loadLevel1();
-   player->setPos(30, 200);
+   player->setPos(30, 260);
 
-   //emit CenterOnPlayer();
+   emit CenterOnPlayer();
 }
 
 void level::restartFromCheckpoint()
