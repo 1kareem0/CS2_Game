@@ -18,6 +18,8 @@ public:
     void updateLivesDisplay();
     void showGameOver();
 
+public slots:
+    void CenterOnPlayer();
 };
 
 #endif // GAME_H

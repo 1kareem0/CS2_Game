@@ -31,6 +31,7 @@ public:
     void reverseDirection();
 
     void checkPlayerCollision();
+    // Setters
 
     void setBlocks(const QList<Block*>& b);
     void setBounds(double left, double right);

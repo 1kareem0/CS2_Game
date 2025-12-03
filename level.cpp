@@ -9,6 +9,10 @@ void level::restartLevel() {
         enemy * e = dynamic_cast<enemy *>(item);
         Coin * c = dynamic_cast<Coin*>(item);
         if(block || obstacle || e){
+
+        Player * player = dynamic_cast<Player *>(item);
+        if(!player){
+
             removeItem(item);
             delete item;
         }
@@ -18,12 +22,20 @@ void level::restartLevel() {
    obstacles.clear();
    enemies.clear();
    coins.clear();
+
    delete score;
    lives.clear();
     removeItem(player);
     delete player;
 
+   uiLives.clear();
+   cps.clear();
+
+
     loadLevel1();
+   player->setPos(30, 200);
+
+   //emit CenterOnPlayer();
 }
 
 void level::restartFromCheckpoint()
@@ -76,9 +88,14 @@ void level::loadLevel1()
         blocks.append(platform3);
     }
 
-    player = new Player();
-    player->setPos(30, 300);
-    addItem(player);
+    if(!player){
+        player = new Player();
+        player->setPos(30, 200);
+        addItem(player);
+    }
+    else{
+        player->resetLives();
+    }
 
     //obstacles:
     QList<QPixmap> f;
@@ -97,7 +114,7 @@ void level::loadLevel1()
     addItem(enemy1);
     enemies.append(enemy1);
 
-    connect(enemy1, &enemy::hitPlayer, this, &level::handlePlayerDeath);
+    // connect(enemy1, &enemy::hitPlayer, this, &level::handlePlayerDeath);
 
     // // Enemy 2
     // enemy *enemy2 = new enemy(nullptr, 1200, 300);
@@ -134,9 +151,9 @@ void level::loadLevel1()
 
 
     //checkpoints:
-    checkpoint * cp1 = new checkpoint(nullptr, 30, 360);
-    checkpoint * cp2 = new checkpoint(nullptr, 200, 360);
-    checkpoint * cp3 = new checkpoint(nullptr, 300, 360);
+    checkpoint * cp1 = new checkpoint(nullptr, 500, 360);
+    checkpoint * cp2 = new checkpoint(nullptr, 7000, 360);
+    checkpoint * cp3 = new checkpoint(nullptr, 1000, 360);
 
     cp1->setScale(0.1);
     cp2->setScale(0.1);
@@ -153,8 +170,8 @@ void level::loadLevel1()
 
     connect(player, &Player::restartLevel, this, &level::restartLevel);
     connect(player, &Player::restartFromCheckpoint, this, &level::restartFromCheckpoint);
-    connect(player, &Player::scrollWorldLeft, this,  &level::scrollWorldLeft);
-    connect(player, &Player::scrollWorldRight, this, &level::scrollWorldRight);
+    // connect(player, &Player::scrollWorldLeft, this,  &level::scrollWorldLeft);
+    // connect(player, &Player::scrollWorldRight, this, &level::scrollWorldRight);
     connect(player, &Player::reduceLife, this, &level::reduceLife);
 
     QTimer * timer = new QTimer(this);
@@ -171,55 +188,55 @@ void level::loadLevel1()
     connect(coin2, &Coin::taken, score, &Score::increase);
 }
 
-void level::scrollWorldLeft(int speed)
-{
-        for(Block* block : blocks){
-            block->setPos(block->x() - speed, block->y());
-        }
-        for(Obstacle* obstacle : obstacles){
-            obstacle->setPos(obstacle->x() - speed, obstacle->y());
-        }
-        //I am not convinced with scrolling the enemies
-        for(enemy* e : enemies){
-            e->setPos(e->x() - speed, e->y());
-            e->setBounds(e->x() - 300, e->x() + 300);
-        }
+// void level::scrollWorldLeft(int speed)
+// {
+//         for(Block* block : blocks){
+//             block->setPos(block->x() - speed, block->y());
+//         }
+//         for(Obstacle* obstacle : obstacles){
+//             obstacle->setPos(obstacle->x() - speed, obstacle->y());
+//         }
+//         //I am not convinced with scrolling the enemies
+//         for(enemy* e : enemies){
+//             e->setPos(e->x() - speed, e->y());
+//             e->setBounds(e->x() - 300, e->x() + 300);
+//         }
 
-        for(checkpoint* cp : cps){
-            cp->setPos(cp->x() - speed, cp->y());
-        }
+//         for(checkpoint* cp : cps){
+//             cp->setPos(cp->x() - speed, cp->y());
+//         }
 
-        for(Coin* e : coins){
-            e->setPos(e->x() - speed, e->y());
-        }
-}
+//         for(Coin* e : coins){
+//             e->setPos(e->x() - speed, e->y());
+//         }
+// }
 
-void level::scrollWorldRight(int speed)
-{
-        for(Block* block : blocks){
-            block->setPos(block->x() + speed, block->y());
-        }
-        for(Obstacle* obstacle : obstacles){
-            obstacle->setPos(obstacle->x() + speed, obstacle->y());
-        }
-        //I might only keeping scrolling to the right
-        for(enemy* e : enemies){
-            e->setPos(e->x() + speed, e->y());
-            e->setBounds(e->x() - 300, e->x() + 300);
-        }
+// void level::scrollWorldRight(int speed)
+// {
+//         for(Block* block : blocks){
+//             block->setPos(block->x() + speed, block->y());
+//         }
+//         for(Obstacle* obstacle : obstacles){
+//             obstacle->setPos(obstacle->x() + speed, obstacle->y());
+//         }
+//         //I might only keeping scrolling to the right
+//         for(enemy* e : enemies){
+//             e->setPos(e->x() + speed, e->y());
+//             e->setBounds(e->x() - 300, e->x() + 300);
+//         }
 
-        for(checkpoint* cp : cps){
-            cp->setPos(cp->x() + speed, cp->y());
-        }
+//         for(checkpoint* cp : cps){
+//             cp->setPos(cp->x() + speed, cp->y());
+//         }
 
-        for(Coin* e : coins){
-            e->setPos(e->x() + speed, e->y());
-        }
-}
+//         for(Coin* e : coins){
+//             e->setPos(e->x() + speed, e->y());
+//         }
+// }
 
 level::level(QObject *parent, int number): QGraphicsScene(parent)
 {
-    this->setSceneRect(0, 0, 1080, 500);
+    this->setSceneRect(0, 0, 1080*5, 500);
 
     if(number == 1){
         loadLevel1();

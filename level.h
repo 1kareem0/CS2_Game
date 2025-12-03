@@ -15,6 +15,8 @@
 
 class level : public QGraphicsScene
 {
+    Q_OBJECT
+
 public:
     Player * player;
     QList<Block*> blocks;
@@ -32,9 +34,12 @@ public slots:
     void restartLevel();
     void restartFromCheckpoint();
     void handlePlayerDeath();
-    void scrollWorldLeft(int speed);
-    void scrollWorldRight(int speed);
+    // void scrollWorldLeft(int speed);
+    // void scrollWorldRight(int speed);
     void reduceLife();
+
+signals:
+    void CenterOnPlayer();
 
 public:
     level(QObject *parent = nullptr, int number  =1);

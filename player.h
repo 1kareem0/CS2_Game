@@ -43,13 +43,15 @@ public:
     static void resetCoins(); //the coins will be updated when the player die
     std::vector<Life *> getLives();
     void setLives(const std::vector<Life *> &newLives);
+    void resetLives();
 
 signals:
-    void scrollWorldLeft(int speed);
-    void scrollWorldRight(int speed);
+    // void scrollWorldLeft(int speed);
+    // void scrollWorldRight(int speed);
     void restartLevel();
     void restartFromCheckpoint();
     void reduceLife();
+    void CenterOnPlayer();
 
 public slots:
     bool onBlock();

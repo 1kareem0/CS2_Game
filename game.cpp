@@ -11,9 +11,21 @@ Game::Game(QWidget *parent)
     currentLevel = new level(nullptr, 1);
 
     this->setScene(currentLevel);
+    QTimer * timer = new QTimer(this);
+    timer->start(16);
+    Game::CenterOnPlayer();
+    connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
+    connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
+    connect(currentLevel, &level::CenterOnPlayer, this, &Game::CenterOnPlayer);
+   // connect(timer, &QTimer::timeout, this, Game::CenterOnPlayer());
+  //  this->setAlignment(Qt::AlignCenter);
+
 }
 
-
+void Game::CenterOnPlayer()
+{
+    this->centerOn(currentLevel->player);
+}
 void Game::showGameOver()
 {
     qDebug() << "Showing Game Over screen";
