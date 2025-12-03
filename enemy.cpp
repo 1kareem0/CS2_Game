@@ -67,30 +67,6 @@ void enemy::reverseDirection()
     direction *= -1;
 }
 
-void enemy::checkPlayerCollision()
-{
-    QList<QGraphicsItem *> collisions = collidingItems();
-    for (auto item : collisions) {
-        Player *player = dynamic_cast<Player *>(item);
-        if (player) {
-            QRectF playerRect = player->boundingRect().translated(player->pos());
-            QRectF enemyRect = boundingRect().translated(pos());
-
-            if (playerRect.bottom() < enemyRect.center().y()) {
-                // Player defeated enemy by jumping on it
-                emit enemyDestroyed();
-                scene()->removeItem(this);
-                deleteLater();
-                return;
-            } else {
-                // Enemy hit player from side
-                emit hitPlayer();
-            }
-            return;
-        }
-    }
-}
-
 void enemy::setBlocks(const QList<Block *> &b)
 {
     blocks = b;
@@ -105,6 +81,5 @@ void enemy::setBounds(double left, double right)
 void enemy::move()
 {
     setPos(x() + direction * speed, y());
-    checkPlayerCollision();
     //checkBoundaries(); //when we add static objects
 }

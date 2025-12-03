@@ -33,9 +33,6 @@ public:
     // void checkEdges();  // Check for platform edges to turn around
     void reverseDirection();
 
-    // Collision
-    void checkPlayerCollision();
-
     // Setters
     void setBlocks(const QList<Block*>& b);
     void setBounds(double left, double right);

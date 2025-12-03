@@ -38,19 +38,25 @@ void Player::setLives(const std::vector<Life *> &newLives)
     lives = newLives;
 }
 
-Player::Player(QGraphicsItem * parent) {
-    setPixmap(QPixmap(":/assets/Finn2.png"));
-    this->setPos(30, 300);
-    this->setScale(0.4);
-    this->lastcheckpoint.setX(30);
-    this->lastcheckpoint.setY(300);
-    setFlag(QGraphicsItem::ItemIsFocusable);
-    setFocus();
-
+void Player::resetLives()
+{
     for(int i = 0; i < 180; i += 60){
         Life *life = new Life(nullptr, i);
         lives.push_back(life);
     }
+}
+
+Player::Player(QGraphicsItem * parent) {
+    yVelocity = 0;
+    setPixmap(QPixmap(":/assets/Finn2.png"));
+    this->setPos(30, 200);
+    this->setScale(0.4);
+    this->lastcheckpoint.setX(30);
+    this->lastcheckpoint.setY(200);
+    setFlag(QGraphicsItem::ItemIsFocusable);
+    setFocus();
+
+    resetLives();
 
     QTimer * running = new QTimer(this);
     running->start(16);
@@ -117,12 +123,12 @@ void Player::move_right()
         if(xVelocity > maxspeed){
             xVelocity = maxspeed;
         }
-        if (x() < middleX) {
-            setPos(x() + xVelocity, y());  //normal until reaching middle
-        } else {
-            emit scrollWorldLeft(xVelocity);  //in middle, scroll the world instead
-        }
-
+        // if (x() < middleX) {
+        //     setPos(x() + xVelocity, y());  //normal until reaching middle
+        // } else {
+        //     emit scrollWorldLeft(xVelocity);  //in middle, scroll the world instead
+        // }
+        setPos(x() + xVelocity, y());
     }
     else if(!running_forward && !running_backward){
         xVelocity -= acceleration;
@@ -131,6 +137,7 @@ void Player::move_right()
         }
         setPos(x() + xVelocity, y());
     }
+    emit CenterOnPlayer();
 }
 
 void Player::move_left()
@@ -142,12 +149,13 @@ void Player::move_left()
         if(xVelocity > maxspeed){
             xVelocity = maxspeed;
         }
-        if(x() > position){
-            setPos(x() - xVelocity, y());
-        }
-        else {
-            emit scrollWorldRight(xVelocity);
-        }
+        // if(x() > position){
+        //     setPos(x() - xVelocity, y());
+        // }
+        // else {
+        //     emit scrollWorldRight(xVelocity);
+        // }
+        setPos(x() - xVelocity, y());
         }
     else if(!running_backward && !running_forward){
         xVelocity -= acceleration;
@@ -156,6 +164,7 @@ void Player::move_left()
         }
          setPos(x() - xVelocity, y());
     }
+        emit CenterOnPlayer();
 }
 
 bool Player::hitObstacle()
@@ -163,7 +172,8 @@ bool Player::hitObstacle()
     QList<QGraphicsItem *> collisions = collidingItems();
     for(auto item : collisions){
         Obstacle * obstacle = dynamic_cast<Obstacle *>(item);
-        if(obstacle){
+        enemy * e = dynamic_cast<enemy *>(item);
+        if(obstacle || e){
             return true;
         }
     }
@@ -179,13 +189,9 @@ void Player::damage()
         if(lives.empty()){
             emit restartLevel();
         }
-        else{
-            if(lastcheckpoint.x() == 30 && lastcheckpoint.y() == 300){
-            emit restartLevel();
-            }
-            else{
+        else
+        {
                 emit restartFromCheckpoint();
-            }
         }
     }
 }
@@ -197,6 +203,7 @@ void Player::hitCheckpoint()
         checkpoint * cp= dynamic_cast<checkpoint *>(item);
         if(cp){
             lastcheckpoint = cp->pos();
+            lastcheckpoint.setY(lastcheckpoint.y() - 160);
         }
     }
 }
