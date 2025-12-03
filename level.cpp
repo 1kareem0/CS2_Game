@@ -4,15 +4,8 @@
 
 void level::restartLevel() {
     for(auto item : items()){
-        Block * block = dynamic_cast<Block *>(item);
-        Obstacle * obstacle = dynamic_cast<Obstacle *>(item);
-        enemy * e = dynamic_cast<enemy *>(item);
-        Coin * c = dynamic_cast<Coin*>(item);
-        if(block || obstacle || e){
-
         Player * player = dynamic_cast<Player *>(item);
         if(!player){
-
             removeItem(item);
             delete item;
         }
@@ -23,20 +16,10 @@ void level::restartLevel() {
    enemies.clear();
    coins.clear();
 
-   delete score;
-   lives.clear();
-    removeItem(player);
-    delete player;
-
-   uiLives.clear();
-   cps.clear();
-
-
     loadLevel1();
    player->setPos(30, 260);
-
-   emit CenterOnPlayer();
 }
+
 
 void level::restartFromCheckpoint()
 {
@@ -44,13 +27,6 @@ void level::restartFromCheckpoint()
     player->xVelocity = 0;
     player->yVelocity = 0;
 }
-
-void level::handlePlayerDeath()
-{
-    qDebug() << "Player died! Restarting from checkpoint...";
-    restartLevel();
-}
-
 
 
 void level::loadLevel1()
@@ -181,8 +157,9 @@ void level::loadLevel1()
     connect(timer, &QTimer::timeout, player, &Player::hitCheckpoint);
     connect(timer, &QTimer::timeout, player, &Player::damage);
 
+    //score
     score = new Score();
-    score->setPos(10, 10);  // top-left corner
+    score->setPos(800, 10);  // top-left corner
     addItem(score);
     connect(coin1, &Coin::taken, score, &Score::increase);
     connect(coin2, &Coin::taken, score, &Score::increase);
