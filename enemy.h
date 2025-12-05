@@ -20,6 +20,8 @@ private:
     double rightBound;
     bool canFall;
     QList<Block*> blocks;  // Reference to blocks for collision detection
+    QTimer * moveTimer;
+    QTimer * fallTimer;
 
 public:
     enemy(QGraphicsItem *parent = nullptr, double startX = 0, double startY = 0);
@@ -35,6 +37,8 @@ public:
 
     void setBlocks(const QList<Block*>& b);
     void setBounds(double left, double right);
+
+    ~ enemy();
 
 public slots:
     void move();

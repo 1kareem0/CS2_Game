@@ -37,23 +37,4 @@ Life::Life(QGraphicsItem *parent, int x)
     setPos(30 + x ,10);
 }
 
-// void Life::moveRightWithPlayer(Player * player)
-// {
-//     if(player->pos().x > 200){
-//     xVelocity += acceleration;
-//     if(xVelocity > maxspeed){
-//         xVelocity = maxspeed;
-//     }
-//     setPos(x() + xVelocity, y());
-//     }
-// }
 
-// void Life::moveLeftWithPlayer(Player * player){
-//     if(player->pos().y < 200){
-//     xVelocity += acceleration;
-//     if(xVelocity > maxspeed){
-//         xVelocity = maxspeed;
-//     }
-//     setPos(x() - xVelocity, y());
-//     }
-// }

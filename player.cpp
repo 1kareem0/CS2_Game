@@ -28,24 +28,6 @@ void Player::resetCoins()
     totalCoins = 0;
 }
 
-// std::vector<Life *> Player::getLives()
-// {
-//     return lives;
-// }
-
-// void Player::setLives(const std::vector<Life *> &newLives)
-// {
-//     lives = newLives;
-// }
-
-// void Player::resetLives()
-// {
-//     for(int i = 0; i < 180; i += 60){
-//         Life *life = new Life(nullptr, i);
-//         lives.push_back(life);
-//     }
-// }
-
 int Player::getLives() const
 {
     return lives;
@@ -93,6 +75,7 @@ void Player::fall()
 {
 
     if(!onBlock() || jumping){
+        isOnGround = false;
         yVelocity += gravity;
         this->setPos(x(), y()+yVelocity);
         if(onBlock() && yVelocity > 0){
@@ -131,13 +114,7 @@ void Player::move_right()
         if(xVelocity > maxspeed){
             xVelocity = maxspeed;
         }
-        // if (x() < middleX) {
-        //     setPos(x() + xVelocity, y());  //normal until reaching middle
-        // } else {
-        //     emit scrollWorldLeft(xVelocity);  //in middle, scroll the world instead
-        // }
         setPos(x() + xVelocity, y());
-        //emit moveRightWithPlayer();
     }
     else if(!running_forward && !running_backward){
         xVelocity -= acceleration;
@@ -158,14 +135,7 @@ void Player::move_left()
         if(xVelocity > maxspeed){
             xVelocity = maxspeed;
         }
-        // if(x() > position){
-        //     setPos(x() - xVelocity, y());
-        // }
-        // else {
-        //     emit scrollWorldRight(xVelocity);
-        // }
         setPos(x() - xVelocity, y());
-        //emit moveLeftWithPlayer();
         }
     else if(!running_backward && !running_forward){
         xVelocity -= acceleration;
@@ -193,7 +163,6 @@ bool Player::hitObstacle()
 void Player::damage()
 {
     if(hitObstacle() || pos().y() > 460){
-        //emit reduceLife();
         lives -= 1;
         if(lives == 0){
             emit restartLevel();
@@ -212,7 +181,7 @@ void Player::hitCheckpoint()
         checkpoint * cp= dynamic_cast<checkpoint *>(item);
         if(cp){
             lastcheckpoint = cp->pos();
-            lastcheckpoint.setY(lastcheckpoint.y() - 160);
+            lastcheckpoint.setY(lastcheckpoint.y() - 50);
         }
     }
 }

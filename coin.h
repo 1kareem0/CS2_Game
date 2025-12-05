@@ -4,6 +4,7 @@
 #include <QGraphicsPathItem>
 #include <QObject>
 #include <QGraphicsItem>
+#include <QMovie>
 
 class Coin: public QObject ,public QGraphicsPixmapItem
 {
@@ -11,9 +12,14 @@ class Coin: public QObject ,public QGraphicsPixmapItem
     int value;
     double leftBound ;
     double rightBound;
+    QMovie * movie;
+
 public:
     Coin(QGraphicsItem* parent, int type);
     void setBounds(double left, double right);
+    void updateFrame();
+
+    ~ Coin();
 signals:
     void taken(int v);
 public slots:

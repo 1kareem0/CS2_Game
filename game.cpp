@@ -16,10 +16,8 @@ Game::Game(QWidget *parent)
     timer->start(16);
     Game::CenterOnPlayer();
     connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
-    //connect(currentLevel, &level::CenterOnPlayer, this, &Game::CenterOnPlayer);
 
     connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
-    //connect(timer, &QTimer::timeout, this, Game::CenterOnPlayer());
     this->setAlignment(Qt::AlignCenter);
 }
 

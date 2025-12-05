@@ -10,7 +10,6 @@ class Game : public QGraphicsView
 
 private:
     level * currentLevel;
-    Score *score;
 
 public:
     Game(QWidget* parent = nullptr);
@@ -20,8 +19,6 @@ public:
     void showGameOver();
 public slots:
     void CenterOnPlayer();
-    // void moveRightWithPlayer(Life * life);
-    // void moveLeftWithPlayer(Life * life);
 };
 
 #endif // GAME_H

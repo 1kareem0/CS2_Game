@@ -31,7 +31,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         checkpoint.h checkpoint.cpp
         coin.h coin.cpp
         life.h life.cpp
-        score.h score.cpp)
+        score.h score.cpp
+        movingobject.h movingobject.cpp)
 
 else()
     if(ANDROID)
