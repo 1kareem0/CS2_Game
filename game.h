@@ -10,6 +10,7 @@ class Game : public QGraphicsView
 
 private:
     level * currentLevel;
+    Score *score;
 
 public:
     Game(QWidget* parent = nullptr);

@@ -26,7 +26,6 @@ public:
     QList<checkpoint *> cps;
     QList<Coin*> coins;
     QList<Life *> lives;
-    Score* score;
 
 
 public slots:
@@ -38,7 +37,7 @@ public slots:
 
 signals:
     void CenterOnPlayer();
-
+    void coinTaken(int amount);
 public:
     level(QObject *parent = nullptr, int number  =1);
     void loadLevel1();

@@ -1,7 +1,8 @@
 #include "game.h"
 #include <QTimer>
 #include <QList>
-
+#include <QGraphicsProxyWidget>
+#include <QWidget>
 Game::Game(QWidget *parent)
 {
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -9,14 +10,21 @@ Game::Game(QWidget *parent)
     this->setFixedSize(1080, 500);
 
     currentLevel = new level(nullptr, 1);
-
     this->setScene(currentLevel);
+
+    score = new Score();
+    this->scene()->addItem(score);
+    score->setZValue(1000);
+
     QTimer * timer = new QTimer(this);
     timer->start(16);
     Game::CenterOnPlayer();
     connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
     connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
     connect(currentLevel, &level::CenterOnPlayer, this, &Game::CenterOnPlayer);
+
+    connect(currentLevel, &level::coinTaken, score, &Score::increase);
+    connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
     //connect(timer, &QTimer::timeout, this, Game::CenterOnPlayer());
     this->setAlignment(Qt::AlignCenter);
 
@@ -25,6 +33,14 @@ Game::Game(QWidget *parent)
 void Game::CenterOnPlayer()
 {
     this->centerOn(currentLevel->player);
+    if (score)
+    {
+        int margin = 20;
+        int x = this->width() - score->boundingRect().width() - margin;
+        int y = margin;
+
+        score->setPos(mapToScene(x, y));
+    }
 }
 
 void Game::showGameOver()
