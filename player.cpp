@@ -137,6 +137,7 @@ void Player::move_right()
         //     emit scrollWorldLeft(xVelocity);  //in middle, scroll the world instead
         // }
         setPos(x() + xVelocity, y());
+        //emit moveRightWithPlayer();
     }
     else if(!running_forward && !running_backward){
         xVelocity -= acceleration;
@@ -164,6 +165,7 @@ void Player::move_left()
         //     emit scrollWorldRight(xVelocity);
         // }
         setPos(x() - xVelocity, y());
+        //emit moveLeftWithPlayer();
         }
     else if(!running_backward && !running_forward){
         xVelocity -= acceleration;

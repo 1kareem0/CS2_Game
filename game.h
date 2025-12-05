@@ -20,6 +20,8 @@ public:
     void showGameOver();
 public slots:
     void CenterOnPlayer();
+    // void moveRightWithPlayer(Life * life);
+    // void moveLeftWithPlayer(Life * life);
 };
 
 #endif // GAME_H

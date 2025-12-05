@@ -49,3 +49,27 @@ void Game::showGameOver()
     //we need to add ui for teh game over
 }
 
+// void Game::moveRightWithPlayer(Life * life)
+// {
+//     if(currentLevel->player->pos().x() > 200){
+//         life->setXVelocity(life->getXVelocity() + life->getAcceleration());
+//         if(life->getXVelocity() > life->getMaxspeed()){
+//             life->setXVelocity(life->getMaxspeed());
+//         }
+//         life->setPos(x() + life->getXVelocity(), y());
+//     }
+//     else life->setXVelocity(0);
+// }
+
+// void Game::moveLeftWithPlayer(Life * life){
+//     if(currentLevel->player->pos().x() < 200){
+//         life->setXVelocity(life->getXVelocity() + life->getAcceleration());
+//         if(life->getXVelocity() > life->getMaxspeed()){
+//             life->setXVelocity(life->getMaxspeed());
+//         }
+//         life->setPos(x() - life->getXVelocity(), y());
+//     }
+//     else life->setXVelocity(0);
+// }
+
+

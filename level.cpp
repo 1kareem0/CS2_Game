@@ -17,7 +17,7 @@ void level::restartLevel() {
    obstacles.clear();
    enemies.clear();
    coins.clear();
-   lives.clear();
+    lives.clear();
 
     loadLevel1();
     player->setLives(3);
@@ -36,6 +36,7 @@ void level::restartFromCheckpoint()
 void level::loadLevel1()
 {
     // Background and Scene setup (Moved from Game)
+    for(int i = 0; i < 5; i ++){
     QGraphicsPixmapItem *Background_layer1 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_1.png"));
     QGraphicsPixmapItem *Background_layer2 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_2.png"));
     QGraphicsPixmapItem *Background_layer3 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_3.png"));
@@ -44,6 +45,10 @@ void level::loadLevel1()
     Background_layer2->setScale(3.4);
     Background_layer3->setScale(3.4);
 
+    Background_layer1->setX(i*1088);
+    Background_layer2->setX(i*1088);
+    Background_layer3->setX(i*1088);
+
     Background_layer1->setZValue(-3);
     Background_layer2->setZValue(-2);
     Background_layer3->setZValue(-1);
@@ -51,6 +56,7 @@ void level::loadLevel1()
     addItem(Background_layer1);
     addItem(Background_layer2);
     addItem(Background_layer3);
+    }
 
     for(int i = 0; i < 3000; i += 70){
         Block *dirt = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
@@ -76,11 +82,29 @@ void level::loadLevel1()
     }
 
     //lives
-    for(int i = 0; i < 180; i += 60){
-        Life * life = new Life(nullptr, i);
-        lives.append(life);
-        addItem(life);
-    }
+    // for(int i = 0; i < 180; i += 60){
+    //     Life * life = new Life(nullptr, i);
+    //     lives.append(life);
+    //     addItem(life);
+    //     //connect(player, &Player::moveLeftWithPlayer, life, &Life::moveLeftWithPlayer());
+    //     //connect(player, &Player::moveRightWithPlayer, life, &Life::moveRightWithPlayer());
+    // }
+    Life * life1 = new Life(nullptr, 0);
+    Life * life2 = new Life(nullptr, 50);
+    Life * life3 = new Life(nullptr, 100);
+
+    lives.append(life1);
+    lives.append(life2);
+    lives.append(life3);
+
+    addItem(life1);
+    addItem(life2);
+    addItem(life3);
+
+    //this is to move with the player
+    life1->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+    life2->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+    life3->setFlag(QGraphicsItem::ItemIgnoresTransformations);
 
     //obstacles:
     QList<QPixmap> f;
@@ -170,6 +194,7 @@ void level::loadLevel1()
     connect(timer, &QTimer::timeout, player, &Player::hitCheckpoint);
     connect(timer, &QTimer::timeout, player, &Player::damage);
     connect(timer, &QTimer::timeout, this, &level::reduceLife);
+    connect(timer, &QTimer::timeout, this, &level::updateLives);
 
 }
 
@@ -190,4 +215,15 @@ void level::reduceLife()
          delete lives.last();
          lives.pop_back();
      }
+}
+
+void level::updateLives()
+{
+    int baseX = player->x() - 310;
+
+    if(player->x() > 300){
+    for (int i = 0; i < lives.size(); i++) {
+        lives[i]->setPos(baseX + i * 50, 10);
+    }
+    }
 }
