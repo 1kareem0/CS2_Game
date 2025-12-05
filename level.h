@@ -20,6 +20,7 @@ class level : public QGraphicsScene
 public:
     QTimer * timer;
     Player * player;
+    Score * score;
     QList<Block*> blocks;
     QList<Obstacle *> obstacles;
     QList<enemy*> enemies;

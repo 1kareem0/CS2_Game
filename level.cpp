@@ -13,15 +13,17 @@ void level::restartLevel() {
 
     delete timer;
 
-   blocks.clear();
-   obstacles.clear();
-   enemies.clear();
-   coins.clear();
+    blocks.clear();
+    obstacles.clear();
+    enemies.clear();
+    coins.clear();
     lives.clear();
 
     loadLevel1();
     player->setLives(3);
     player->setPos(30, 260);
+    player->setLastcheckpoint(QPointF(30, 200));
+    player->setZValue(1);
 }
 
 
@@ -180,9 +182,14 @@ void level::loadLevel1()
     addItem(cp2);
     addItem(cp3);
 
+    //score
+    score = new Score();
+    score->setZValue(3);
+    addItem(score);
 
     connect(player, &Player::restartLevel, this, &level::restartLevel);
     connect(player, &Player::restartFromCheckpoint, this, &level::restartFromCheckpoint);
+    connect(this, &level::coinTaken, score, &Score::increase);
     //connect(player, &Player::reduceLife, this, &level::reduceLife);
     // connect(player, &Player::scrollWorldLeft, this,  &level::scrollWorldLeft);
     // connect(player, &Player::scrollWorldRight, this, &level::scrollWorldRight);
@@ -219,11 +226,11 @@ void level::reduceLife()
 
 void level::updateLives()
 {
-    int baseX = player->x() - 310;
+    int baseX = player->x() - 270;
 
     if(player->x() > 300){
     for (int i = 0; i < lives.size(); i++) {
         lives[i]->setPos(baseX + i * 50, 10);
-    }
+        }
     }
 }
