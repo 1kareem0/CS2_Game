@@ -55,6 +55,8 @@ signals:
     void restartLevel();
     void restartFromCheckpoint();
     void CenterOnPlayer();
+    //void moveLeftWithPlayer();
+    //void moveRightWithPlayer();
     //void reduceLife();
 
 public slots:

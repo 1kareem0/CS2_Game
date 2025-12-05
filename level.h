@@ -43,6 +43,7 @@ public:
     level(QObject *parent = nullptr, int number  =1);
     void loadLevel1();
     bool isCheckpoint();
+    void updateLives();
 };
 
 #endif // LEVEL_H

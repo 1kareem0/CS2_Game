@@ -17,7 +17,8 @@ Game::Game(QWidget *parent)
     connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
     connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
     connect(currentLevel, &level::CenterOnPlayer, this, &Game::CenterOnPlayer);
-    //connect(timer, &QTimer::timeout, this, Game::CenterOnPlayer());
+
+
     this->setAlignment(Qt::AlignCenter);
 
 }
@@ -32,4 +33,28 @@ void Game::showGameOver()
     qDebug() << "Showing Game Over screen";
     //we need to add ui for teh game over
 }
+
+// void Game::moveRightWithPlayer(Life * life)
+// {
+//     if(currentLevel->player->pos().x() > 200){
+//         life->setXVelocity(life->getXVelocity() + life->getAcceleration());
+//         if(life->getXVelocity() > life->getMaxspeed()){
+//             life->setXVelocity(life->getMaxspeed());
+//         }
+//         life->setPos(x() + life->getXVelocity(), y());
+//     }
+//     else life->setXVelocity(0);
+// }
+
+// void Game::moveLeftWithPlayer(Life * life){
+//     if(currentLevel->player->pos().x() < 200){
+//         life->setXVelocity(life->getXVelocity() + life->getAcceleration());
+//         if(life->getXVelocity() > life->getMaxspeed()){
+//             life->setXVelocity(life->getMaxspeed());
+//         }
+//         life->setPos(x() - life->getXVelocity(), y());
+//     }
+//     else life->setXVelocity(0);
+// }
+
 
