@@ -7,7 +7,7 @@
 #include <QString>
 #include "player.h"
 #include <QDebug>
-#include "Obstacle.h"
+#include "obstacle.h"
 #include "block.h"
 #include "enemy.h"
 #include "coin.h"
@@ -39,6 +39,8 @@ public slots:
 signals:
     void CenterOnPlayer();
     void coinTaken(int amount);
+    void gameOverTriggered();
+   // void updategame();
 public:
     level(QObject *parent = nullptr, int number  =1);
     void loadLevel1();

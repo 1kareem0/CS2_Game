@@ -3,6 +3,9 @@
 #include <QDebug>
 
 void level::restartLevel() {
+
+    timer->stop();
+
     for(auto item : items()){
         Player * player = dynamic_cast<Player *>(item);
         if(!player){
@@ -24,6 +27,10 @@ void level::restartLevel() {
     player->setPos(30, 260);
     player->setLastcheckpoint(QPointF(30, 200));
     player->setZValue(1);
+    player->damageCooldown = 0;
+
+    timer->start();
+
 }
 
 
@@ -32,6 +39,7 @@ void level::restartFromCheckpoint()
     player->setPos(player->lastcheckpoint);
     player->xVelocity = 0;
     player->yVelocity = 0;
+    player->damageCooldown = 0;
 }
 
 
@@ -39,25 +47,25 @@ void level::loadLevel1()
 {
     // Background and Scene setup (Moved from Game)
     for(int i = 0; i < 5; i ++){
-    QGraphicsPixmapItem *Background_layer1 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_1.png"));
-    QGraphicsPixmapItem *Background_layer2 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_2.png"));
-    QGraphicsPixmapItem *Background_layer3 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_3.png"));
+        QGraphicsPixmapItem *Background_layer1 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_1.png"));
+        QGraphicsPixmapItem *Background_layer2 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_2.png"));
+        QGraphicsPixmapItem *Background_layer3 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_3.png"));
 
-    Background_layer1->setScale(3.4);
-    Background_layer2->setScale(3.4);
-    Background_layer3->setScale(3.4);
+        Background_layer1->setScale(3.4);
+        Background_layer2->setScale(3.4);
+        Background_layer3->setScale(3.4);
 
-    Background_layer1->setX(i*1088);
-    Background_layer2->setX(i*1088);
-    Background_layer3->setX(i*1088);
+        Background_layer1->setX(i*1088);
+        Background_layer2->setX(i*1088);
+        Background_layer3->setX(i*1088);
 
-    Background_layer1->setZValue(-3);
-    Background_layer2->setZValue(-2);
-    Background_layer3->setZValue(-1);
+        Background_layer1->setZValue(-3);
+        Background_layer2->setZValue(-2);
+        Background_layer3->setZValue(-1);
 
-    addItem(Background_layer1);
-    addItem(Background_layer2);
-    addItem(Background_layer3);
+        addItem(Background_layer1);
+        addItem(Background_layer2);
+        addItem(Background_layer3);
     }
 
     for(int i = 0; i < 3000; i += 70){
@@ -197,12 +205,7 @@ void level::loadLevel1()
     timer = new QTimer(this);
     timer->start(16);
 
-    connect(timer, &QTimer::timeout, player, &Player::fall);
-    connect(timer, &QTimer::timeout, player, &Player::hitCheckpoint);
-    connect(timer, &QTimer::timeout, player, &Player::damage);
-    connect(timer, &QTimer::timeout, this, &level::reduceLife);
-    connect(timer, &QTimer::timeout, this, &level::updateLives);
-
+    //connect(timer, &QTimer::timeout, this, &level::update);
 }
 
 level::level(QObject *parent, int number): QGraphicsScene(parent)
@@ -216,12 +219,16 @@ level::level(QObject *parent, int number): QGraphicsScene(parent)
 
 void level::reduceLife()
 {
-     if (lives.isEmpty()) return;
+    if (lives.isEmpty()) return;
 
-     if (!lives.isEmpty() && lives.size() > player->getLives()) {
-         delete lives.last();
-         lives.pop_back();
-     }
+    if (!lives.isEmpty() && lives.size() > player->getLives()) {
+        delete lives.last();
+        lives.pop_back();
+        player->setLives(player->getLives() - 1); //i added this
+    }
+    if (player->getLives() <= 0) {
+        emit gameOverTriggered();  // New signal we will create
+    }
 }
 
 void level::updateLives()
@@ -229,8 +236,8 @@ void level::updateLives()
     int baseX = player->x() - 270;
 
     if(player->x() > 300){
-    for (int i = 0; i < lives.size(); i++) {
-        lives[i]->setPos(baseX + i * 50, 10);
+        for (int i = 0; i < lives.size(); i++) {
+            lives[i]->setPos(baseX + i * 50, 10);
         }
     }
 }

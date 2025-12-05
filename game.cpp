@@ -18,9 +18,41 @@ Game::Game(QWidget *parent)
     connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
     //connect(currentLevel, &level::CenterOnPlayer, this, &Game::CenterOnPlayer);
 
-    connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
     //connect(timer, &QTimer::timeout, this, Game::CenterOnPlayer());
+    connect(currentLevel, &level::gameOverTriggered, this, &Game::showGameOver);
+
     this->setAlignment(Qt::AlignCenter);
+    this->setFocus(); //to accept the enter pressing
+}
+
+void Game::showGameOver()
+{
+    currentLevel->timer->stop();
+    currentLevel->player->setEnabled(false);
+
+    QGraphicsTextItem* gameOverText = new QGraphicsTextItem("GAME OVER");
+    QFont font("Arial", 48, QFont::Bold);
+    gameOverText->setFont(font);
+    gameOverText->setDefaultTextColor(Qt::red);
+    gameOverText->setZValue(1000);
+
+    gameOverText->setPos(
+        currentLevel->sceneRect().width()/2 - gameOverText->boundingRect().width()/2,
+        currentLevel->sceneRect().height()/2 - 100);
+
+    currentLevel->addItem(gameOverText);
+
+    restartText = new QGraphicsTextItem("Press ENTER to Restart");
+    restartText->setFont(QFont("Arial", 20));
+    restartText->setDefaultTextColor(Qt::white);
+    restartText->setZValue(1000);
+
+    restartText->setPos(
+        gameOverText->x(),
+        gameOverText->y() + 80);
+
+    currentLevel->addItem(restartText);
+    centerOn(currentLevel->sceneRect().center());
 }
 
 void Game::CenterOnPlayer()
@@ -36,10 +68,23 @@ void Game::CenterOnPlayer()
     }
 }
 
-void Game::showGameOver()
+void Game::clearGameOver()
 {
-    qDebug() << "Showing Game Over screen";
-    //we need to add ui for teh game over
+    if (gameOverText) { currentLevel->removeItem(gameOverText); delete gameOverText; gameOverText = nullptr; }
+    if (restartText)  { currentLevel->removeItem(restartText);  delete restartText;  restartText = nullptr; }
+}
+
+void Game::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
+        if (currentLevel->player->getLives() <= 0) {
+            currentLevel->restartLevel();  // Restart level 1
+            return;
+        }
+    }
+
+    // Otherwise, pass to default behavior
+    QGraphicsView::keyPressEvent(event);
 }
 
 // void Game::moveRightWithPlayer(Life * life)

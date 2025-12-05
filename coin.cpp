@@ -9,7 +9,7 @@ Coin::Coin(QGraphicsItem *parent, int type): QGraphicsPixmapItem(parent) {
     setScale(0.1);
 
     QTimer* TakenChecker= new QTimer(this);
-    TakenChecker->start(5);
+    TakenChecker->start(16);
     connect(TakenChecker,&QTimer::timeout,this, &Coin::CheckTaken);
 }
 void Coin::CheckTaken()

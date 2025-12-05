@@ -29,6 +29,7 @@ class Player : public QObject ,public QGraphicsPixmapItem
     int lives = 3;
     QPointF lastcheckpoint;
     static int totalCoins;
+    int damageCooldown = 0;
 
     friend class level;
 
@@ -68,6 +69,7 @@ public slots:
     void damage();
     bool hitObstacle();
     void hitCheckpoint();
+    void updateCamera();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
