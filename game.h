@@ -17,7 +17,6 @@ public:
     void restartLevel();
     void updateLivesDisplay();
     void showGameOver();
-
 public slots:
     void CenterOnPlayer();
 };

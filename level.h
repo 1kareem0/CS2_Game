@@ -18,15 +18,14 @@ class level : public QGraphicsScene
     Q_OBJECT
 
 public:
+    QTimer * timer;
     Player * player;
     QList<Block*> blocks;
     QList<Obstacle *> obstacles;
     QList<enemy*> enemies;
     QList<checkpoint *> cps;
-    std::vector<QGraphicsPixmapItem*> uiLives;
     QList<Coin*> coins;
-
-    std::vector<Life *> lives;
+    QList<Life *> lives;
     Score* score;
 
 

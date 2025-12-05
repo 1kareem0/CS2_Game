@@ -28,22 +28,32 @@ void Player::resetCoins()
     totalCoins = 0;
 }
 
-std::vector<Life *> Player::getLives()
+// std::vector<Life *> Player::getLives()
+// {
+//     return lives;
+// }
+
+// void Player::setLives(const std::vector<Life *> &newLives)
+// {
+//     lives = newLives;
+// }
+
+// void Player::resetLives()
+// {
+//     for(int i = 0; i < 180; i += 60){
+//         Life *life = new Life(nullptr, i);
+//         lives.push_back(life);
+//     }
+// }
+
+int Player::getLives() const
 {
     return lives;
 }
 
-void Player::setLives(const std::vector<Life *> &newLives)
+void Player::setLives(int newLives)
 {
     lives = newLives;
-}
-
-void Player::resetLives()
-{
-    for(int i = 0; i < 180; i += 60){
-        Life *life = new Life(nullptr, i);
-        lives.push_back(life);
-    }
 }
 
 Player::Player(QGraphicsItem * parent) {
@@ -55,8 +65,6 @@ Player::Player(QGraphicsItem * parent) {
     this->lastcheckpoint.setY(200);
     setFlag(QGraphicsItem::ItemIsFocusable);
     setFocus();
-
-    resetLives();
 
     QTimer * running = new QTimer(this);
     running->start(16);
@@ -73,7 +81,7 @@ bool Player::onBlock()
         if(block){
             QRectF playerR = this->boundingRect().translated(this->pos());
             QRectF blockR = block->boundingRect().translated(block->pos());
-            if(playerR.bottom() <= blockR.top() + 500){
+            if(playerR.bottom() <= blockR.top() + 503){
             return true;
             }
             }
@@ -183,10 +191,9 @@ bool Player::hitObstacle()
 void Player::damage()
 {
     if(hitObstacle() || pos().y() > 460){
-        emit reduceLife();
-        delete lives.back();
-        lives.pop_back();
-        if(lives.empty()){
+        //emit reduceLife();
+        lives -= 1;
+        if(lives == 0){
             emit restartLevel();
         }
         else

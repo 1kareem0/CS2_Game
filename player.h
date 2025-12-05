@@ -25,7 +25,8 @@ class Player : public QObject ,public QGraphicsPixmapItem
     float acceleration = 0.4;
     bool running_forward = false;
     bool running_backward = false;
-    std::vector<Life *> lives;
+    //std::vector<Life *> lives;
+    int lives = 3;
     QPointF lastcheckpoint;
     static int totalCoins;
 
@@ -41,17 +42,20 @@ public:
     static int getTotalCoins();
     static void addCoins(int amount);
     static void resetCoins(); //the coins will be updated when the player die
-    std::vector<Life *> getLives();
-    void setLives(const std::vector<Life *> &newLives);
-    void resetLives();
+    //std::vector<Life *> getLives();
+    //void setLives(const std::vector<Life *> &newLives);
+    //void resetLives();
+
+    int getLives() const;
+    void setLives(int newLives);
 
 signals:
     // void scrollWorldLeft(int speed);
     // void scrollWorldRight(int speed);
     void restartLevel();
     void restartFromCheckpoint();
-    void reduceLife();
     void CenterOnPlayer();
+    //void reduceLife();
 
 public slots:
     bool onBlock();

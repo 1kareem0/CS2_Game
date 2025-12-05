@@ -17,8 +17,8 @@ Game::Game(QWidget *parent)
     connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
     connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
     connect(currentLevel, &level::CenterOnPlayer, this, &Game::CenterOnPlayer);
-   // connect(timer, &QTimer::timeout, this, Game::CenterOnPlayer());
-  //  this->setAlignment(Qt::AlignCenter);
+    //connect(timer, &QTimer::timeout, this, Game::CenterOnPlayer());
+    this->setAlignment(Qt::AlignCenter);
 
 }
 
@@ -26,6 +26,7 @@ void Game::CenterOnPlayer()
 {
     this->centerOn(currentLevel->player);
 }
+
 void Game::showGameOver()
 {
     qDebug() << "Showing Game Over screen";
