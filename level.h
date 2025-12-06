@@ -41,6 +41,7 @@ public:
     void loadLevel1();
     bool isCheckpoint();
     void updateLives();
+    void loadLevel2();
 };
 
 #endif // LEVEL_H

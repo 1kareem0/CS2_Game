@@ -25,6 +25,7 @@ void level::restartLevel() {
     lives.clear();
 
     loadLevel1();
+
     player->setLives(3);
     player->setPos(30, 200);
     player->setLastcheckpoint(QPointF(30, 200));
@@ -81,48 +82,40 @@ void level::loadLevel1()
     addItem(Background_layer3);
     }
 
-    for(int i = 0; i < 50; i++){
+    // Base ground blocks
+    for (int i = 0; i < 40; i++) {
+        int x = -30 + i * 70;
+        if (x > 1000 && x < 2000) continue; // skip blocks in the gap
+
         Block *dirt = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
-        dirt->setPos(-30 + i*70, 400);
+        dirt->setPos(x, 400);
         dirt->setScale(1.5);
         addItem(dirt);
         blocks.append(dirt);
+    }
 
-        while(i*70 > 1000 && i*70 < 2000){
-            i++;
+    // Floating platforms
+    struct PlatformInfo {
+        int startX;
+        int y;
+        int count;
+    };
+
+    PlatformInfo platforms[] = {
+        {200 + 1000, 330, 3},
+        {1200 + 200, 270, 3},
+        {1450 + 200, 210, 3},
+        {1700 + 200, 300, 3}
+    };
+
+    for (auto &p : platforms) {
+        for (int i = 0; i < p.count; i++) {
+            Block *platform = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
+            platform->setPos(p.startX + i * 70, p.y);
+            platform->setScale(1.5);
+            addItem(platform);
+            blocks.append(platform);
         }
-    }
-
-    for(int i = 0; i < 3; i++){
-        Block *platform3 = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
-        platform3->setPos(-30 + 200 + 1000 + (i * 70), 330);
-        platform3->setScale(1.5);
-        addItem(platform3);
-        blocks.append(platform3);
-    }
-
-    for(int i = 0; i < 3; i++){
-        Block *platform3 = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
-        platform3->setPos(1200 + 200 + (i * 70), 270);
-        platform3->setScale(1.5);
-        addItem(platform3);
-        blocks.append(platform3);
-    }
-
-    for(int i = 0; i < 3; i++){
-        Block *platform3 = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
-        platform3->setPos(1450 + 200 + (i * 70), 210);
-        platform3->setScale(1.5);
-        addItem(platform3);
-        blocks.append(platform3);
-    }
-
-    for(int i = 0; i < 3; i++){
-        Block *platform3 = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
-        platform3->setPos(1700 + 200 + (i * 70), 300);
-        platform3->setScale(1.5);
-        addItem(platform3);
-        blocks.append(platform3);
     }
 
     //player
@@ -144,11 +137,6 @@ void level::loadLevel1()
     addItem(life1);
     addItem(life2);
     addItem(life3);
-
-    //this is to move with the player
-    life1->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-    life2->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-    life3->setFlag(QGraphicsItem::ItemIgnoresTransformations);
 
     //obstacles:
     for(int i = 0; i < 2; i++){
@@ -181,27 +169,6 @@ void level::loadLevel1()
     //addItem(enemy1);
     enemies.append(enemy1);
 
-    // connect(enemy1, &enemy::hitPlayer, this, &level::handlePlayerDeath);
-
-    // // Enemy 2
-    // enemy *enemy2 = new enemy(nullptr, 1200, 300);
-    // enemy2->setBlocks(blocks);
-    // enemy2->setBounds(1000, 1400);
-    // addItem(enemy2);
-    // enemies.append(enemy2);
-
-    // connect(enemy2, &enemy::hitPlayer, this, &level::handlePlayerDeath);
-
-    // // Enemy 3:
-
-    // enemy *enemy3 = new enemy(nullptr, 1100, 200);
-    // enemy3->setBlocks(blocks);
-    // enemy3->setBounds(1000, 1200);  // Patrol on platform
-    // addItem(enemy3);
-    // enemies.append(enemy3);
-
-    // connect(enemy3, &enemy::hitPlayer, this, &level::handlePlayerDeath);
-
     Coin* coin1 = new Coin(nullptr, 0);
     coin1->setPos(300, 250);
 
@@ -217,8 +184,7 @@ void level::loadLevel1()
     addItem(coin2);
     coins.append(coin2);
 
-    connect(coin2, &Coin::taken, this, [this](){
-        emit coinTaken(1);});
+    connect(coin2, &Coin::taken, this, [this](){emit coinTaken(1);});
 
 
     checkpoint * cp2 = new checkpoint(nullptr, 1610 + 200, 165);
@@ -250,9 +216,9 @@ void level::loadLevel1()
     //moving obstacel
     QList<QPixmap> moFrames;
     moFrames.append(QPixmap(":/assets/Ratating_Spike_8.png"));
-    MovingObject* mo = new MovingObject(timer, 3000,   3500,   moFrames);
+    MovingObject* mo = new MovingObject(timer, 2200,   2500,   moFrames);
 
-    mo->setPos(3000, 380);
+    mo->setPos(2000, 374);
     mo->setZValue(-1);
     addItem(mo);
 
@@ -261,7 +227,6 @@ void level::loadLevel1()
     connect(timer, &QTimer::timeout, player, &Player::damage);
     connect(timer, &QTimer::timeout, this, &level::reduceLife);
     connect(timer, &QTimer::timeout, this, &level::updateLives);
-
 }
 
 level::level(QObject *parent, int number): QGraphicsScene(parent)
@@ -272,6 +237,58 @@ level::level(QObject *parent, int number): QGraphicsScene(parent)
         loadLevel1();
     }
 
+}
+
+void level::loadLevel2()
+{
+
+
+
+    //player
+    if(!player){
+        player = new Player();
+        player->setPos(30, 200);
+        addItem(player);
+    }
+
+    //lives
+    Life * life1 = new Life(nullptr, 0);
+    Life * life2 = new Life(nullptr, 50);
+    Life * life3 = new Life(nullptr, 100);
+
+    lives.append(life1);
+    lives.append(life2);
+    lives.append(life3);
+
+    addItem(life1);
+    addItem(life2);
+    addItem(life3);
+
+
+    //score
+    score = new Score();
+    score->setZValue(3);
+    addItem(score);
+
+    connect(player, &Player::restartLevel, this, &level::restartLevel);
+    connect(player, &Player::restartFromCheckpoint, this, &level::restartFromCheckpoint);
+    connect(this, &level::coinTaken, score, &Score::increase);
+
+    if(timer) {
+        timer->stop();
+        timer->disconnect();
+        delete timer;
+    }
+
+    timer = new QTimer(this);
+    timer->start(16);
+
+
+    connect(timer, &QTimer::timeout, player, &Player::fall);
+    connect(timer, &QTimer::timeout, player, &Player::hitCheckpoint);
+    connect(timer, &QTimer::timeout, player, &Player::damage);
+    connect(timer, &QTimer::timeout, this, &level::reduceLife);
+    connect(timer, &QTimer::timeout, this, &level::updateLives);
 }
 
 void level::reduceLife()
@@ -294,3 +311,5 @@ void level::updateLives()
         }
     }
 }
+
+
