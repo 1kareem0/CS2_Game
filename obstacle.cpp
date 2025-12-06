@@ -37,6 +37,11 @@ void Obstacle::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
     painter->drawPixmap(x, y, pix);
 }
 
+Obstacle::~Obstacle()
+{
+    delete timer;
+}
+
 void Obstacle::advanceFrame()
 {
     if (frames.isEmpty()) {

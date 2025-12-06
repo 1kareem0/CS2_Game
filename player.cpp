@@ -15,7 +15,7 @@ QPointF Player::getLastcheckpoint() const
 
 int Player::getTotalCoins()
 {
-      return totalCoins;
+    return totalCoins;
 }
 
 void Player::addCoins(int amount)
@@ -27,24 +27,6 @@ void Player::resetCoins()
 {
     totalCoins = 0;
 }
-
-// std::vector<Life *> Player::getLives()
-// {
-//     return lives;
-// }
-
-// void Player::setLives(const std::vector<Life *> &newLives)
-// {
-//     lives = newLives;
-// }
-
-// void Player::resetLives()
-// {
-//     for(int i = 0; i < 180; i += 60){
-//         Life *life = new Life(nullptr, i);
-//         lives.push_back(life);
-//     }
-// }
 
 int Player::getLives() const
 {
@@ -58,8 +40,6 @@ void Player::setLives(int newLives)
 
 Player::Player(QGraphicsItem * parent) {
     yVelocity = 0;
-    isOnGround = false;
-    jumping = false;
     setPixmap(QPixmap(":/assets/Finn2.png"));
     this->setPos(30, 200);
     this->setScale(0.4);
@@ -72,10 +52,6 @@ Player::Player(QGraphicsItem * parent) {
     running->start(16);
     connect(running, &QTimer::timeout, this, &Player::move_right);
     connect(running, &QTimer::timeout, this, &Player::move_left);
-    connect(running, &QTimer::timeout, this, &Player::fall);
-    connect(running, &QTimer::timeout, this, &Player::damage);
-    connect(running, &QTimer::timeout, this, &Player::hitCheckpoint);
-    connect(running, &QTimer::timeout, this, &Player::updateCamera);
 
 }
 
@@ -87,8 +63,7 @@ bool Player::onBlock()
         if(block){
             QRectF playerR = this->boundingRect().translated(this->pos());
             QRectF blockR = block->boundingRect().translated(block->pos());
-            // Check if player's bottom is near or on top of the block
-            if(playerR.bottom() >= blockR.top() - 5 && playerR.bottom() <= blockR.top() + 10){
+            if(playerR.bottom() <= blockR.top() + 503){
                 return true;
             }
         }
@@ -98,68 +73,24 @@ bool Player::onBlock()
 
 void Player::fall()
 {
-    // Apply gravity if not on ground or jumping
+
     if(!onBlock() || jumping){
+        isOnGround = false;
         yVelocity += gravity;
         this->setPos(x(), y()+yVelocity);
-    }
-    
-    // Check for landing on a block (falling down onto it)
-    if(onBlock() && yVelocity > 0){
-        // Snap player to top of block
-        QList<QGraphicsItem *> collisions = collidingItems();
-        for(auto item : collisions){
-            Block * block = dynamic_cast<Block *>(item);
-            if(block){
-                QRectF blockR = block->boundingRect().translated(block->pos());
-                QRectF playerR = this->boundingRect();
-                // Set player position so bottom aligns with block top
-                setPos(x(), blockR.top() - playerR.height());
-                yVelocity = 0;
-                isOnGround = true;
-                jumping = false;
-                break;
-            }
+        if(onBlock() && yVelocity > 0){
+            yVelocity = 0;
+            isOnGround = true;
+            jumping = false;
         }
-    }
-    // Check for hitting block from below (jumping into it)
-    else if(onBlock() && yVelocity < 0){
-        QList<QGraphicsItem *> collisions = collidingItems();
-        for(auto item : collisions){
-            Block * block = dynamic_cast<Block *>(item);
-            if(block){
-                QRectF blockR = block->boundingRect().translated(block->pos());
-                QRectF playerR = this->boundingRect();
-                // Set player position so top aligns with block bottom
-                setPos(x(), blockR.bottom());
-                yVelocity = 0;
-                isOnGround = false;
-                break;
-            }
+        else if(onBlock() && yVelocity < 0){
+            this->setPos(x(), y() - (yVelocity + 8));
+            isOnGround = false;
         }
-    }
-    // Keep player on block if already standing on it
-    else if(onBlock() && yVelocity == 0 && isOnGround){
-        QList<QGraphicsItem *> collisions = collidingItems();
-        for(auto item : collisions){
-            Block * block = dynamic_cast<Block *>(item);
-            if(block){
-                QRectF blockR = block->boundingRect().translated(block->pos());
-                QRectF playerR = this->boundingRect();
-                // Ensure player stays on top of block
-                double targetY = blockR.top() - playerR.height();
-                double diff = y() - targetY;
-                if(diff > 1 || diff < -1){
-                    setPos(x(), targetY);
-                }
-                break;
-            }
+        else if( yVelocity == 0 && !onBlock()){
+            isOnGround = false;
+            jumping = false;
         }
-    }
-    // Update ground state
-    else if(yVelocity == 0 && !onBlock()){
-        isOnGround = false;
-        jumping = false;
     }
 }
 
@@ -183,13 +114,7 @@ void Player::move_right()
         if(xVelocity > maxspeed){
             xVelocity = maxspeed;
         }
-        // if (x() < middleX) {
-        //     setPos(x() + xVelocity, y());  //normal until reaching middle
-        // } else {
-        //     emit scrollWorldLeft(xVelocity);  //in middle, scroll the world instead
-        // }
         setPos(x() + xVelocity, y());
-        //emit moveRightWithPlayer();
     }
     else if(!running_forward && !running_backward){
         xVelocity -= acceleration;
@@ -198,6 +123,7 @@ void Player::move_right()
         }
         setPos(x() + xVelocity, y());
     }
+    emit CenterOnPlayer();
 }
 
 void Player::move_left()
@@ -209,22 +135,16 @@ void Player::move_left()
         if(xVelocity > maxspeed){
             xVelocity = maxspeed;
         }
-        // if(x() > position){
-        //     setPos(x() - xVelocity, y());
-        // }
-        // else {
-        //     emit scrollWorldRight(xVelocity);
-        // }
         setPos(x() - xVelocity, y());
-        //emit moveLeftWithPlayer();
-        }
+    }
     else if(!running_backward && !running_forward){
         xVelocity -= acceleration;
         if(xVelocity < 0){
             xVelocity = 0;
         }
-         setPos(x() - xVelocity, y());
+        setPos(x() - xVelocity, y());
     }
+    emit CenterOnPlayer();
 }
 
 bool Player::hitObstacle()
@@ -242,21 +162,24 @@ bool Player::hitObstacle()
 
 void Player::damage()
 {
+    if((hitObstacle() || pos().y() > 460) && !isDamaged && damageCooldown <= 0){
+        isDamaged = true;
+        damageCooldown = 60; // 60 frames = 1 second immunity
+        lives -= 1;
+
+        if(lives <= 0){
+            emit restartLevel();  // This will trigger game over
+        }
+        else {
+            emit restartFromCheckpoint();
+        }
+    }
+
+    // Countdown the damage cooldown
     if(damageCooldown > 0){
         damageCooldown--;
-        return;
-    }
-    
-    if(hitObstacle() || pos().y() > 460){
-        //emit reduceLife();
-        lives -= 1;
-        damageCooldown = 60; // 1 second cooldown at 60fps (60 frames)
-        if(lives == 0){
-            emit restartLevel();
-        }
-        else
-        {
-                emit restartFromCheckpoint();
+        if(damageCooldown == 0){
+            isDamaged = false;
         }
     }
 }
@@ -268,7 +191,7 @@ void Player::hitCheckpoint()
         checkpoint * cp= dynamic_cast<checkpoint *>(item);
         if(cp){
             lastcheckpoint = cp->pos();
-            lastcheckpoint.setY(lastcheckpoint.y() - 160);
+            lastcheckpoint.setY(lastcheckpoint.y() - 50);
         }
     }
 }
@@ -298,9 +221,3 @@ void Player::keyReleaseEvent(QKeyEvent *event)
         running_backward = false;
     }
 }
-
-void Player::updateCamera()
-{
-    emit CenterOnPlayer();
-}
-

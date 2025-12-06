@@ -10,9 +10,7 @@ class Game : public QGraphicsView
 
 private:
     level * currentLevel;
-    Score *score;
-    QGraphicsTextItem *gameOverText = nullptr;
-    QGraphicsTextItem *restartText  = nullptr;
+    bool isGameOver; //flag for preventing any move
 
 public:
     Game(QWidget* parent = nullptr);
@@ -20,13 +18,10 @@ public:
     void restartLevel();
     void updateLivesDisplay();
     void showGameOver();
-    void clearGameOver();
 public slots:
     void CenterOnPlayer();
-    // void moveRightWithPlayer(Life * life);
-    // void moveLeftWithPlayer(Life * life);
 protected:
-    void keyPressEvent(QKeyEvent *event) override; //this is overriden from Qgraphicsitem
+    void keyPressEvent(QKeyEvent *event) override;
 };
 
 #endif // GAME_H

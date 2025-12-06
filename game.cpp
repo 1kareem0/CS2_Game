@@ -16,74 +16,82 @@ Game::Game(QWidget *parent)
     timer->start(16);
     Game::CenterOnPlayer();
     connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
-    //connect(currentLevel, &level::CenterOnPlayer, this, &Game::CenterOnPlayer);
 
-    //connect(timer, &QTimer::timeout, this, Game::CenterOnPlayer());
-    connect(currentLevel, &level::gameOverTriggered, this, &Game::showGameOver);
-
+    connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
     this->setAlignment(Qt::AlignCenter);
-    this->setFocus(); //to accept the enter pressing
+
+    connect(currentLevel, &level::gameOver, this, &Game::showGameOver);
+
+    //functions for checking press
+    this->setFocus();
+    this->setFocusPolicy(Qt::StrongFocus);
 }
 
-void Game::showGameOver()
-{
-    currentLevel->timer->stop();
-    currentLevel->player->setEnabled(false);
 
-    QGraphicsTextItem* gameOverText = new QGraphicsTextItem("GAME OVER");
-    QFont font("Arial", 48, QFont::Bold);
-    gameOverText->setFont(font);
-    gameOverText->setDefaultTextColor(Qt::red);
-    gameOverText->setZValue(1000);
-
-    gameOverText->setPos(
-        currentLevel->sceneRect().width()/2 - gameOverText->boundingRect().width()/2,
-        currentLevel->sceneRect().height()/2 - 100);
-
-    currentLevel->addItem(gameOverText);
-
-    restartText = new QGraphicsTextItem("Press ENTER to Restart");
-    restartText->setFont(QFont("Arial", 20));
-    restartText->setDefaultTextColor(Qt::white);
-    restartText->setZValue(1000);
-
-    restartText->setPos(
-        gameOverText->x(),
-        gameOverText->y() + 80);
-
-    currentLevel->addItem(restartText);
-    centerOn(currentLevel->sceneRect().center());
-}
-
-void Game::CenterOnPlayer()
-{
+void Game::CenterOnPlayer(){
     this->centerOn(currentLevel->player);
     if (currentLevel->score)
     {
         int margin = 20;
         int x = this->width() - currentLevel->score->boundingRect().width() - margin;
         int y = margin;
-
         currentLevel->score->setPos(mapToScene(x, y));
     }
 }
 
-void Game::clearGameOver()
+void Game::restartLevel()
 {
-    if (gameOverText) { currentLevel->removeItem(gameOverText); delete gameOverText; gameOverText = nullptr; }
-    if (restartText)  { currentLevel->removeItem(restartText);  delete restartText;  restartText = nullptr; }
+    isGameOver = false;
+
+    if(currentLevel){
+        this->scene()->clear();
+        delete currentLevel;
+        currentLevel = nullptr;
+    }
+    currentLevel = new level(nullptr, 1);
+    currentLevel->player->setLives(3);
+
+    this->setScene(currentLevel);
+    connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
+    connect(currentLevel, &level::gameOver, this, &Game::showGameOver);
+
+    CenterOnPlayer();
+}
+
+void Game::showGameOver()
+{
+    isGameOver = true;
+
+    if(currentLevel->timer){
+        currentLevel->timer->stop();
+    }
+
+    QGraphicsTextItem *gameOverText =
+        new QGraphicsTextItem("GAME OVER\nPress SPACE to Restart");
+
+    QFont font("Arial", 30, QFont::Bold);
+    gameOverText->setFont(font);
+    gameOverText->setDefaultTextColor(Qt::red);
+    gameOverText->setZValue(10);
+
+    int viewWidth = this->width();
+    int viewHeight = this->height();
+    gameOverText->setPos(viewWidth/2 - 200, viewHeight/2 - 100);
+
+    currentLevel->addItem(gameOverText);
 }
 
 void Game::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
-        if (currentLevel->player->getLives() <= 0) {
-            currentLevel->restartLevel();  // Restart level 1
-            return;
-        }
+    if(isGameOver)
+    {
+        if(event->key() == Qt::Key_Space)
+            restartLevel();
+
+        return; // IGNORE ALL OTHER KEYS
     }
 
-    // Otherwise, pass to default behavior
+    // Normal controls
     QGraphicsView::keyPressEvent(event);
 }
 
@@ -109,5 +117,3 @@ void Game::keyPressEvent(QKeyEvent *event)
 //     }
 //     else life->setXVelocity(0);
 // }
-
-

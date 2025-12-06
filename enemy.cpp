@@ -18,12 +18,12 @@ enemy::enemy(QGraphicsItem *parent, double startX, double startY)
     rightBound = startX + 300;
 
     // Movement timer
-    QTimer *moveTimer = new QTimer(this);
+    moveTimer = new QTimer(this);
     connect(moveTimer, &QTimer::timeout, this, &enemy::move);
     moveTimer->start(16);
 
     // Gravity timer
-    QTimer *fallTimer = new QTimer(this);
+    fallTimer = new QTimer(this);
     connect(fallTimer, &QTimer::timeout, this, &enemy::fall);
     fallTimer->start(16);
 }
@@ -41,7 +41,7 @@ void enemy::fall()
 //for dealing with gravity as an enemy
 bool enemy::onBlock()
 {
-QList<QGraphicsItem *> collisions = collidingItems();
+    QList<QGraphicsItem *> collisions = collidingItems();
     for(auto item : collisions){
         Block * block = dynamic_cast<Block *>(item);
         if(block){
@@ -76,6 +76,12 @@ void enemy::setBounds(double left, double right)
 {
     leftBound = left;
     rightBound = right;
+}
+
+enemy::~enemy()
+{
+    delete moveTimer;
+    delete fallTimer;
 }
 
 void enemy::move()

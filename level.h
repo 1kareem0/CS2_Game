@@ -7,7 +7,7 @@
 #include <QString>
 #include "player.h"
 #include <QDebug>
-#include "obstacle.h"
+#include "MovingObject.h"
 #include "block.h"
 #include "enemy.h"
 #include "coin.h"
@@ -28,19 +28,15 @@ public:
     QList<Coin*> coins;
     QList<Life *> lives;
 
-
 public slots:
     void restartLevel();
     void restartFromCheckpoint();
-    // void scrollWorldLeft(int speed);
-    // void scrollWorldRight(int speed);
     void reduceLife();
 
 signals:
     void CenterOnPlayer();
     void coinTaken(int amount);
-    void gameOverTriggered();
-   // void updategame();
+    void gameOver();
 public:
     level(QObject *parent = nullptr, int number  =1);
     void loadLevel1();

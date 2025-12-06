@@ -26,10 +26,6 @@ public:
 
     float getAcceleration() const;
     void setAcceleration(float newAcceleration);
-
-public slots:
-    // void moveRightWithPlayer(Player * player);
-    // void moveLeftWithPlayer(Player * player);
 };
 
 #endif // LIFE_H
