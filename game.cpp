@@ -9,7 +9,7 @@ Game::Game(QWidget *parent)
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setFixedSize(1080, 500);
 
-    currentLevel = new level(nullptr, 1);
+    currentLevel = new level(nullptr, 2);
     this->setScene(currentLevel);
 
     QTimer * timer = new QTimer(this);
@@ -39,60 +39,47 @@ void Game::CenterOnPlayer(){
     }
 }
 
-void Game::restartLevel()
-{
-    isGameOver = false;
+// void Game::restartLevel()
+// {
+//     isGameOver = false;
 
-    if(currentLevel){
-        this->scene()->clear();
-        delete currentLevel;
-        currentLevel = nullptr;
-    }
-    currentLevel = new level(nullptr, 1);
-    currentLevel->player->setLives(3);
+//     if(currentLevel){
+//         this->scene()->clear();
+//         delete currentLevel;
+//         currentLevel = nullptr;
+//     }
+//     currentLevel = new level(nullptr, 1);
+//     currentLevel->player->setLives(3);
 
-    this->setScene(currentLevel);
-    connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
-    connect(currentLevel, &level::gameOver, this, &Game::showGameOver);
+//     this->setScene(currentLevel);
+//     connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
+//     connect(currentLevel, &level::gameOver, this, &Game::showGameOver);
 
-    CenterOnPlayer();
-}
+//     CenterOnPlayer();
+// }
 
 void Game::showGameOver()
 {
     isGameOver = true;
 
-    if(currentLevel->timer){
+    if (currentLevel->timer) {
         currentLevel->timer->stop();
     }
 
-    QGraphicsTextItem *gameOverText =
-        new QGraphicsTextItem("GAME OVER\nPress SPACE to Restart");
+    QGraphicsTextItem *gameOverText = new QGraphicsTextItem("GAME OVER\nPress R to Restart");
 
     QFont font("Arial", 30, QFont::Bold);
     gameOverText->setFont(font);
     gameOverText->setDefaultTextColor(Qt::red);
     gameOverText->setZValue(10);
 
-    int viewWidth = this->width();
-    int viewHeight = this->height();
-    gameOverText->setPos(viewWidth/2 - 200, viewHeight/2 - 100);
+    // Use SCENE SIZE instead of view size
+    int sceneW = currentLevel->sceneRect().width();
+    int sceneH = currentLevel->sceneRect().height();
+
+    gameOverText->setPos(sceneW/2 - 200, sceneH/2 - 100);
 
     currentLevel->addItem(gameOverText);
-}
-
-void Game::keyPressEvent(QKeyEvent *event)
-{
-    if(isGameOver)
-    {
-        if(event->key() == Qt::Key_Space)
-            restartLevel();
-
-        return; // IGNORE ALL OTHER KEYS
-    }
-
-    // Normal controls
-    QGraphicsView::keyPressEvent(event);
 }
 
 // void Game::moveRightWithPlayer(Life * life)

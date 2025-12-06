@@ -15,13 +15,12 @@ private:
 public:
     Game(QWidget* parent = nullptr);
 
-    void restartLevel();
     void updateLivesDisplay();
-    void showGameOver();
 public slots:
     void CenterOnPlayer();
+    //void restartLevel();
+    void showGameOver();
 protected:
-    void keyPressEvent(QKeyEvent *event) override;
 };
 
 #endif // GAME_H

@@ -63,11 +63,12 @@ bool Player::onBlock()
         if(block){
             QRectF playerR = this->boundingRect().translated(this->pos());
             QRectF blockR = block->boundingRect().translated(block->pos());
-            if(playerR.bottom() <= blockR.top() + 503){
-                return true;
+
+            if(playerR.bottom() <= blockR.top() + block->getBlockTop()){
+            return true;
+            }
             }
         }
-    }
     return false;
 }
 
@@ -162,9 +163,7 @@ bool Player::hitObstacle()
 
 void Player::damage()
 {
-    if((hitObstacle() || pos().y() > 460) && !isDamaged && damageCooldown <= 0){
-        isDamaged = true;
-        damageCooldown = 60; // 60 frames = 1 second immunity
+    if(hitObstacle() || pos().y() > 460){
         lives -= 1;
 
         if(lives <= 0){
@@ -172,14 +171,6 @@ void Player::damage()
         }
         else {
             emit restartFromCheckpoint();
-        }
-    }
-
-    // Countdown the damage cooldown
-    if(damageCooldown > 0){
-        damageCooldown--;
-        if(damageCooldown == 0){
-            isDamaged = false;
         }
     }
 }
@@ -206,6 +197,9 @@ void Player::keyPressEvent(QKeyEvent *event)
     }
     else if(event->key() == Qt::Key_Left){
         running_backward = true;
+    }
+    else if(event->key() == Qt::Key_R){
+        emit restartLevel();
     }
     else{
         QGraphicsPixmapItem::keyPressEvent(event);
