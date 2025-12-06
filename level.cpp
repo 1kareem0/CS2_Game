@@ -269,7 +269,7 @@ void level::loadLevel1()
     connect(timer, &QTimer::timeout, player, &Player::fall);
     connect(timer, &QTimer::timeout, player, &Player::hitCheckpoint);
     connect(timer, &QTimer::timeout, player, &Player::damage);
-   // connect(timer, &QTimer::timeout, this, &level::reduceLife);
+    // connect(timer, &QTimer::timeout, this, &level::reduceLife);
     connect(player, &Player::restartFromCheckpoint, this, &level::reduceLife); //added instead of timeout
     connect(timer, &QTimer::timeout, this, &level::updateLives);
 
