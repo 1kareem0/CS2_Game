@@ -32,6 +32,10 @@ class Player : public QObject ,public QGraphicsPixmapItem
 
     friend class level;
 
+    //fro the game over checkinf
+    bool isDamaged = false;
+    int damageCooldown = 0;
+
 public:
     Player(QGraphicsItem * parent = nullptr);
 

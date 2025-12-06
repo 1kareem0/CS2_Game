@@ -36,6 +36,7 @@ public slots:
 signals:
     void CenterOnPlayer();
     void coinTaken(int amount);
+    void gameOver();
 public:
     level(QObject *parent = nullptr, int number  =1);
     void loadLevel1();

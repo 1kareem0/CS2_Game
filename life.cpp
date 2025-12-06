@@ -36,5 +36,3 @@ Life::Life(QGraphicsItem *parent, int x)
     setScale(0.4);
     setPos(30 + x ,10);
 }
-
-

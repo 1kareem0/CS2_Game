@@ -10,6 +10,7 @@ class Game : public QGraphicsView
 
 private:
     level * currentLevel;
+    bool isGameOver; //flag for preventing any move
 
 public:
     Game(QWidget* parent = nullptr);
@@ -19,6 +20,8 @@ public:
     void showGameOver();
 public slots:
     void CenterOnPlayer();
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
 };
 
 #endif // GAME_H

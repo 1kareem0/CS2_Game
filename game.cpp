@@ -19,25 +19,80 @@ Game::Game(QWidget *parent)
 
     connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
     this->setAlignment(Qt::AlignCenter);
+
+    connect(currentLevel, &level::gameOver, this, &Game::showGameOver);
+
+    //functions for checking press
+    this->setFocus();
+    this->setFocusPolicy(Qt::StrongFocus);
 }
 
-void Game::CenterOnPlayer()
-{
+
+void Game::CenterOnPlayer(){
     this->centerOn(currentLevel->player);
     if (currentLevel->score)
     {
         int margin = 20;
         int x = this->width() - currentLevel->score->boundingRect().width() - margin;
         int y = margin;
-
         currentLevel->score->setPos(mapToScene(x, y));
     }
 }
 
+void Game::restartLevel()
+{
+    isGameOver = false;
+
+    if(currentLevel){
+        this->scene()->clear();
+        delete currentLevel;
+        currentLevel = nullptr;
+    }
+    currentLevel = new level(nullptr, 1);
+    currentLevel->player->setLives(3);
+
+    this->setScene(currentLevel);
+    connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
+    connect(currentLevel, &level::gameOver, this, &Game::showGameOver);
+
+    CenterOnPlayer();
+}
+
 void Game::showGameOver()
 {
-    qDebug() << "Showing Game Over screen";
-    //we need to add ui for teh game over
+    isGameOver = true;
+
+    if(currentLevel->timer){
+        currentLevel->timer->stop();
+    }
+
+    QGraphicsTextItem *gameOverText =
+        new QGraphicsTextItem("GAME OVER\nPress SPACE to Restart");
+
+    QFont font("Arial", 30, QFont::Bold);
+    gameOverText->setFont(font);
+    gameOverText->setDefaultTextColor(Qt::red);
+    gameOverText->setZValue(10);
+
+    int viewWidth = this->width();
+    int viewHeight = this->height();
+    gameOverText->setPos(viewWidth/2 - 200, viewHeight/2 - 100);
+
+    currentLevel->addItem(gameOverText);
+}
+
+void Game::keyPressEvent(QKeyEvent *event)
+{
+    if(isGameOver)
+    {
+        if(event->key() == Qt::Key_Space)
+            restartLevel();
+
+        return; // IGNORE ALL OTHER KEYS
+    }
+
+    // Normal controls
+    QGraphicsView::keyPressEvent(event);
 }
 
 // void Game::moveRightWithPlayer(Life * life)
@@ -62,5 +117,3 @@ void Game::showGameOver()
 //     }
 //     else life->setXVelocity(0);
 // }
-
-

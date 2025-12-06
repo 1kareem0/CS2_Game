@@ -15,7 +15,7 @@ QPointF Player::getLastcheckpoint() const
 
 int Player::getTotalCoins()
 {
-      return totalCoins;
+    return totalCoins;
 }
 
 void Player::addCoins(int amount)
@@ -64,10 +64,10 @@ bool Player::onBlock()
             QRectF playerR = this->boundingRect().translated(this->pos());
             QRectF blockR = block->boundingRect().translated(block->pos());
             if(playerR.bottom() <= blockR.top() + 503){
-            return true;
-            }
+                return true;
             }
         }
+    }
     return false;
 }
 
@@ -136,15 +136,15 @@ void Player::move_left()
             xVelocity = maxspeed;
         }
         setPos(x() - xVelocity, y());
-        }
+    }
     else if(!running_backward && !running_forward){
         xVelocity -= acceleration;
         if(xVelocity < 0){
             xVelocity = 0;
         }
-         setPos(x() - xVelocity, y());
+        setPos(x() - xVelocity, y());
     }
-        emit CenterOnPlayer();
+    emit CenterOnPlayer();
 }
 
 bool Player::hitObstacle()
@@ -162,14 +162,24 @@ bool Player::hitObstacle()
 
 void Player::damage()
 {
-    if(hitObstacle() || pos().y() > 460){
+    if((hitObstacle() || pos().y() > 460) && !isDamaged && damageCooldown <= 0){
+        isDamaged = true;
+        damageCooldown = 60; // 60 frames = 1 second immunity
         lives -= 1;
-        if(lives == 0){
-            emit restartLevel();
+
+        if(lives <= 0){
+            emit restartLevel();  // This will trigger game over
         }
-        else
-        {
-                emit restartFromCheckpoint();
+        else {
+            emit restartFromCheckpoint();
+        }
+    }
+
+    // Countdown the damage cooldown
+    if(damageCooldown > 0){
+        damageCooldown--;
+        if(damageCooldown == 0){
+            isDamaged = false;
         }
     }
 }
@@ -211,4 +221,3 @@ void Player::keyReleaseEvent(QKeyEvent *event)
         running_backward = false;
     }
 }
-

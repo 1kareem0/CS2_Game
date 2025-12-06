@@ -41,7 +41,7 @@ void enemy::fall()
 //for dealing with gravity as an enemy
 bool enemy::onBlock()
 {
-QList<QGraphicsItem *> collisions = collidingItems();
+    QList<QGraphicsItem *> collisions = collidingItems();
     for(auto item : collisions){
         Block * block = dynamic_cast<Block *>(item);
         if(block){
