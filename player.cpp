@@ -63,7 +63,7 @@ bool Player::onBlock()
         if(block){
             QRectF playerR = this->boundingRect().translated(this->pos());
             QRectF blockR = block->boundingRect().translated(block->pos());
-            if(playerR.bottom() <= blockR.top() + 503){
+            if(playerR.bottom() <= blockR.top() + block->getBlockTop()){
             return true;
             }
             }

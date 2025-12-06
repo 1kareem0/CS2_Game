@@ -9,7 +9,7 @@ Game::Game(QWidget *parent)
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setFixedSize(1080, 500);
 
-    currentLevel = new level(nullptr, 1);
+    currentLevel = new level(nullptr, 2);
     this->setScene(currentLevel);
 
     QTimer * timer = new QTimer(this);
@@ -33,34 +33,4 @@ void Game::CenterOnPlayer()
         currentLevel->score->setPos(mapToScene(x, y));
     }
 }
-
-void Game::showGameOver()
-{
-    qDebug() << "Showing Game Over screen";
-    //we need to add ui for teh game over
-}
-
-// void Game::moveRightWithPlayer(Life * life)
-// {
-//     if(currentLevel->player->pos().x() > 200){
-//         life->setXVelocity(life->getXVelocity() + life->getAcceleration());
-//         if(life->getXVelocity() > life->getMaxspeed()){
-//             life->setXVelocity(life->getMaxspeed());
-//         }
-//         life->setPos(x() + life->getXVelocity(), y());
-//     }
-//     else life->setXVelocity(0);
-// }
-
-// void Game::moveLeftWithPlayer(Life * life){
-//     if(currentLevel->player->pos().x() < 200){
-//         life->setXVelocity(life->getXVelocity() + life->getAcceleration());
-//         if(life->getXVelocity() > life->getMaxspeed()){
-//             life->setXVelocity(life->getMaxspeed());
-//         }
-//         life->setPos(x() - life->getXVelocity(), y());
-//     }
-//     else life->setXVelocity(0);
-// }
-
 

@@ -10,13 +10,12 @@ class Game : public QGraphicsView
 
 private:
     level * currentLevel;
+    bool isGameOver; //flag for preventing any move
 
 public:
     Game(QWidget* parent = nullptr);
 
-    void restartLevel();
     void updateLivesDisplay();
-    void showGameOver();
 public slots:
     void CenterOnPlayer();
 };

@@ -8,7 +8,6 @@
         <file>assets/Long_Dirt_Block.png</file>
         <file>assets/Underground.png</file>
         <file>assets/Finn2.png</file>
-        <file>assets/LemonGrap.png</file>
         <file>assets/Lich.png</file>
         <file>assets/Ratating_Spike_8.png</file>
         <file>assets/Rotating_Spike_1.png</file>
@@ -23,5 +22,21 @@
         <file>assets/Finn_life.png</file>
         <file>assets/Coin.gif</file>
         <file>assets/Flag.png</file>
+        <file>assets/1 Buildings/2.png</file>
+        <file>assets/1 Buildings/5.png</file>
+        <file>assets/1 Buildings/6.png</file>
+        <file>assets/1 Tiles/BayTile_05.png</file>
+        <file>assets/1 Tiles/BayTile_06.png</file>
+        <file>assets/1 Tiles/BayTile_07.png</file>
+        <file>assets/1 Tiles/BayTile_08.png</file>
+        <file>assets/1 Tiles/BayTile_09.png</file>
+        <file>assets/1 Tiles/BayTile_10.png</file>
+        <file>assets/1 Tiles/BayTile_16.png</file>
+        <file>assets/1 Tiles/BayTile_17.png</file>
+        <file>assets/1 Tiles/BayTile_18.png</file>
+        <file>assets/1 Tiles/BayTile_19.png</file>
+        <file>assets/3 Background/Day/Background.png</file>
+        <file>assets/LemonGrap.png</file>
     </qresource>
+    <qresource prefix="/."/>
 </RCC>
