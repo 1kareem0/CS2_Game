@@ -40,6 +40,7 @@ signals:
 public:
     level(QObject *parent = nullptr, int number  =1);
     void loadLevel1();
+    void loadLevel3();
     bool isCheckpoint();
     void updateLives();
 };

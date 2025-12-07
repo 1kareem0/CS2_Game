@@ -16,8 +16,6 @@ Game::Game(QWidget *parent)
     timer->start(16);
     Game::CenterOnPlayer();
     connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
-
-    connect(currentLevel->player, &Player::CenterOnPlayer, this, &Game::CenterOnPlayer);
     this->setAlignment(Qt::AlignCenter);
 
     connect(currentLevel, &level::gameOver, this, &Game::showGameOver);
@@ -67,7 +65,7 @@ void Game::showGameOver()
     }
 
     QGraphicsTextItem *gameOverText =
-        new QGraphicsTextItem("GAME OVER\nPress SPACE to Restart");
+        new QGraphicsTextItem("GAME OVER\nPress R to Restart");
 
     QFont font("Arial", 30, QFont::Bold);
     gameOverText->setFont(font);
@@ -85,7 +83,7 @@ void Game::keyPressEvent(QKeyEvent *event)
 {
     if(isGameOver)
     {
-        if(event->key() == Qt::Key_Space)
+        if(event->key() == Qt::Key_R)
             restartLevel();
 
         return; // IGNORE ALL OTHER KEYS
