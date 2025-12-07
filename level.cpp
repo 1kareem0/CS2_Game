@@ -422,8 +422,7 @@ void level::loadLevel1()
     addItem(coin1);
     coins.append(coin1);
 
-    connect(coin1, &Coin::taken, this, [this](){
-        emit coinTaken(1);});
+    connect(coin1, &Coin::taken, this, [this](){emit coinTaken(1);});
 
     Coin* coin2 = new Coin(nullptr, 1);
     coin2->setPos(600, 250);
@@ -474,7 +473,7 @@ void level::loadLevel1()
     connect(timer, &QTimer::timeout, player, &Player::fall);
     connect(timer, &QTimer::timeout, player, &Player::hitCheckpoint);
     connect(timer, &QTimer::timeout, player, &Player::damage);
-   // connect(timer, &QTimer::timeout, this, &level::reduceLife);
+    connect(timer, &QTimer::timeout, this, &level::reduceLife);
     connect(player, &Player::restartFromCheckpoint, this, &level::reduceLife); //added instead of timeout
     connect(timer, &QTimer::timeout, this, &level::updateLives);
 }
@@ -494,11 +493,39 @@ level::level(QObject *parent, int number): QGraphicsScene(parent)
 
 void level::loadLevel2()
 {
-    if(timer) {
+    for (auto item : items()) {
+        Player * player = dynamic_cast<Player *>(item);
+        if(!player){
+            removeItem(item);
+            delete item;
+        }
+    }
+
+    if (timer) {
         timer->stop();
         timer->disconnect();
         delete timer;
+        timer = nullptr;
     }
+
+    blocks.clear();
+    obstacles.clear();
+    enemies.clear();
+    coins.clear();
+    lives.clear();
+
+    if(player->getLives() <= 0) {
+        emit gameOver();
+    }
+
+    player->setLives(3);
+    player->setPos(30, 200);
+    player->setLastcheckpoint(QPointF(30, 200));
+    player->setZValue(1);
+
+
+    player->xVelocity = 0;
+    player->yVelocity = 0;
 
     timer = new QTimer(this);
     timer->start(16);

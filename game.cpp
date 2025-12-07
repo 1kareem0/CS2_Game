@@ -30,9 +30,7 @@ Game::Game(QWidget *parent)
 void Game::LevelComplete(){
     int nextLevel = currentLevel->player->getCurrentLevel();
     if(nextLevel == 2){
-        delete currentLevel;
-        currentLevel = new level(nullptr, 3);
-        this->setScene(currentLevel);
+        currentLevel->loadLevel2();
     }
 }
 
