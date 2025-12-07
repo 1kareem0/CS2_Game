@@ -309,6 +309,27 @@ void level::loadLevel1()
 {
     // Background and Scene setup
 
+    for (auto item : items()) {
+        Player * player = dynamic_cast<Player *>(item);
+        if(!player){
+            removeItem(item);
+            delete item;
+        }
+    }
+
+    if (timer) {
+        timer->stop();
+        timer->disconnect();
+        delete timer;
+        timer = nullptr;
+    }
+
+    blocks.clear();
+    obstacles.clear();
+    enemies.clear();
+    coins.clear();
+    lives.clear();
+
     for(int i = 0; i < 5; i ++){
         QGraphicsPixmapItem *Background_layer1 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_1.png"));
         QGraphicsPixmapItem *Background_layer2 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_2.png"));
@@ -493,39 +514,9 @@ level::level(QObject *parent, int number): QGraphicsScene(parent)
 
 void level::loadLevel2()
 {
-    for (auto item : items()) {
-        Player * player = dynamic_cast<Player *>(item);
-        if(!player){
-            removeItem(item);
-            delete item;
-        }
-    }
-
-    if (timer) {
-        timer->stop();
-        timer->disconnect();
-        delete timer;
-        timer = nullptr;
-    }
-
-    blocks.clear();
-    obstacles.clear();
-    enemies.clear();
-    coins.clear();
-    lives.clear();
-
-    if(player->getLives() <= 0) {
-        emit gameOver();
-    }
-
-    player->setLives(3);
-    player->setPos(30, 200);
-    player->setLastcheckpoint(QPointF(30, 200));
-    player->setZValue(1);
 
 
-    player->xVelocity = 0;
-    player->yVelocity = 0;
+
 
     timer = new QTimer(this);
     timer->start(16);
