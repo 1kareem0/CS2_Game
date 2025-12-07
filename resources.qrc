@@ -37,6 +37,9 @@
         <file>assets/1 Tiles/BayTile_19.png</file>
         <file>assets/3 Background/Day/Background.png</file>
         <file>assets/LemonGrap.png</file>
+        <file>assets/FS1.png</file>
+        <file>assets/RS1.png</file>
+        <file>assets/UDS.png</file>
     </qresource>
     <qresource prefix="/."/>
 </RCC>

@@ -38,6 +38,16 @@ void Player::setLives(int newLives)
     lives = newLives;
 }
 
+int Player::getCurrentLevel() const
+{
+    return currentLevel;
+}
+
+void Player::setCurrentLevel(int newCurrentLevel)
+{
+    currentLevel = newCurrentLevel;
+}
+
 Player::Player(QGraphicsItem * parent) {
     yVelocity = 0;
     setPixmap(QPixmap(":/assets/Finn2.png"));
@@ -179,9 +189,13 @@ void Player::hitCheckpoint()
     QList<QGraphicsItem *> collisions = collidingItems();
     for(auto item : collisions){
         checkpoint * cp= dynamic_cast<checkpoint *>(item);
-        if(cp){
+        if(cp && !cp->getIsEnd()){
             lastcheckpoint = cp->pos();
             lastcheckpoint.setY(lastcheckpoint.y() - 50);
+        }
+        else if(cp && cp->getIsEnd()){
+            lastcheckpoint = QPointF(30, 300);
+            currentLevel++;
         }
     }
 }
@@ -196,6 +210,9 @@ void Player::keyPressEvent(QKeyEvent *event)
     }
     else if(event->key() == Qt::Key_Left){
         running_backward = true;
+    }
+    else if(event->key() == Qt::Key_Space){
+        emit restartLevel();
     }
     else{
         QGraphicsPixmapItem::keyPressEvent(event);

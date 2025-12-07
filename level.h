@@ -27,6 +27,7 @@ public:
     QList<checkpoint *> cps;
     QList<Coin*> coins;
     QList<Life *> lives;
+    float end;
 
 public slots:
     void restartLevel();
@@ -43,6 +44,9 @@ public:
     bool isCheckpoint();
     void updateLives();
     void loadLevel2();
+    void loadLevel3();
+
+    ~ level();
 };
 
 #endif // LEVEL_H

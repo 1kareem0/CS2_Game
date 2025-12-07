@@ -16,8 +16,10 @@ public:
     Game(QWidget* parent = nullptr);
 
     void updateLivesDisplay();
+    void LevelComplete();
 public slots:
     void CenterOnPlayer();
+    void showGameOver();
 };
 
 #endif // GAME_H
