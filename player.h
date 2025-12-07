@@ -29,12 +29,9 @@ class Player : public QObject ,public QGraphicsPixmapItem
     int lives = 3;
     QPointF lastcheckpoint;
     static int totalCoins;
+    int currentLevel = 1;
 
     friend class level;
-
-    //fro the game over checkinf
-    bool isDamaged = false;
-    int damageCooldown = 0;
 
 public:
     Player(QGraphicsItem * parent = nullptr);
@@ -50,10 +47,14 @@ public:
     int getLives() const;
     void setLives(int newLives);
 
+    int getCurrentLevel() const;
+    void setCurrentLevel(int newCurrentLevel);
+
 signals:
     void restartLevel();
     void restartFromCheckpoint();
     void CenterOnPlayer();
+    void showGameOver();
 
 public slots:
     bool onBlock();

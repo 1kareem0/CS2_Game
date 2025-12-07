@@ -3,13 +3,13 @@
 #include <QDebug>
 
 void level::restartLevel() {
-    for(auto item : items()){
-        Player * player = dynamic_cast<Player *>(item);
-        if(!player){
+        for (auto item : items()) {
+            Player * player = dynamic_cast<Player *>(item);
+            if(!player){
             removeItem(item);
             delete item;
         }
-    }
+        }
 
     if (timer) {
         timer->stop();
@@ -24,9 +24,12 @@ void level::restartLevel() {
     coins.clear();
     lives.clear();
 
+    if(player->getLives() <= 0) {
+        emit gameOver();
+    }
+
     loadLevel1();
-
-
+    player->setLives(3);
     player->setPos(30, 200);
     player->setLastcheckpoint(QPointF(30, 200));
     player->setZValue(1);
@@ -34,10 +37,6 @@ void level::restartLevel() {
 
     player->xVelocity = 0;
     player->yVelocity = 0;
-
-    if(player->getLives() <= 0) {
-        emit gameOver();
-    }
 }
 
 
@@ -51,9 +50,9 @@ void level::restartFromCheckpoint()
     }
 }
 
-
 void level::loadLevel3()
 {
+
     for(auto item : items()) {
         if(item != player) {
             removeItem(item);
@@ -67,6 +66,8 @@ void level::loadLevel3()
     cps.clear();
 
     // Background and Scene setup (Moved from Game)
+    // Background and Scene setup
+
     for(int i = 0; i < 5; i ++){
         QGraphicsPixmapItem *Background_layer1 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_1.png"));
         QGraphicsPixmapItem *Background_layer2 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_2.png"));
@@ -89,42 +90,31 @@ void level::loadLevel3()
         addItem(Background_layer3);
     }
 
-    for(int i = 0; i < 50; i++){
+    for(int i = 0; i < 40; i++){
         Block *dirt = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
         dirt->setPos(-30 + i*70, 400);
-        dirt->setScale(1.5);
-        addItem(dirt);
-        blocks.append(dirt);
-
+        dirt->setScale(1.5); addItem(dirt); blocks.append(dirt);
         while(i*70 > 1000 && i*70 < 2000){
             i++;
         }
     }
-
     for(int i = 0; i < 3; i++){
         Block *platform3 = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
         platform3->setPos(-30 + 200 + 1000 + (i * 70), 330);
-        platform3->setScale(1.5);
-        addItem(platform3);
+        platform3->setScale(1.5); addItem(platform3);
         blocks.append(platform3);
     }
-
     for(int i = 0; i < 3; i++){
         Block *platform3 = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
         platform3->setPos(1200 + 200 + (i * 70), 270);
-        platform3->setScale(1.5);
-        addItem(platform3);
-        blocks.append(platform3);
+        platform3->setScale(1.5); addItem(platform3); blocks.append(platform3);
     }
-
     for(int i = 0; i < 3; i++){
         Block *platform3 = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
         platform3->setPos(1450 + 200 + (i * 70), 210);
-        platform3->setScale(1.5);
-        addItem(platform3);
+        platform3->setScale(1.5); addItem(platform3);
         blocks.append(platform3);
     }
-
     for(int i = 0; i < 3; i++){
         Block *platform3 = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
         platform3->setPos(1700 + 200 + (i * 70), 300);
@@ -153,11 +143,6 @@ void level::loadLevel3()
     addItem(life1);
     addItem(life2);
     addItem(life3);
-
-    //this is to move with the player
-    life1->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-    life2->setFlag(QGraphicsItem::ItemIgnoresTransformations);
-    life3->setFlag(QGraphicsItem::ItemIgnoresTransformations);
 
     //obstacles:
     for(int i = 0; i < 2; i++){
@@ -190,35 +175,13 @@ void level::loadLevel3()
     //addItem(enemy1);
     enemies.append(enemy1);
 
-    // connect(enemy1, &enemy::hitPlayer, this, &level::handlePlayerDeath);
-
-    // // Enemy 2
-    // enemy *enemy2 = new enemy(nullptr, 1200, 300);
-    // enemy2->setBlocks(blocks);
-    // enemy2->setBounds(1000, 1400);
-    // addItem(enemy2);
-    // enemies.append(enemy2);
-
-    // connect(enemy2, &enemy::hitPlayer, this, &level::handlePlayerDeath);
-
-    // // Enemy 3:
-
-    // enemy *enemy3 = new enemy(nullptr, 1100, 200);
-    // enemy3->setBlocks(blocks);
-    // enemy3->setBounds(1000, 1200);  // Patrol on platform
-    // addItem(enemy3);
-    // enemies.append(enemy3);
-
-    // connect(enemy3, &enemy::hitPlayer, this, &level::handlePlayerDeath);
-
     Coin* coin1 = new Coin(nullptr, 0);
     coin1->setPos(300, 250);
 
     addItem(coin1);
     coins.append(coin1);
 
-    connect(coin1, &Coin::taken, this, [this](){
-        emit coinTaken(1);});
+    connect(coin1, &Coin::taken, this, [this](){emit coinTaken(1);});
 
     Coin* coin2 = new Coin(nullptr, 1);
     coin2->setPos(600, 250);
@@ -226,17 +189,18 @@ void level::loadLevel3()
     addItem(coin2);
     coins.append(coin2);
 
-    connect(coin2, &Coin::taken, this, [this](){
-        emit coinTaken(1);});
+    connect(coin2, &Coin::taken, this, [this](){emit coinTaken(1);});
 
 
-    checkpoint * cp2 = new checkpoint(nullptr, 1610 + 200, 165);
-
+    checkpoint * cp2 = new checkpoint(nullptr, 1610 + 200, 165, false);
     cp2->setScale(0.1);
-
     cps.append(cp2);
-
     addItem(cp2);
+
+    checkpoint * cp3 = new checkpoint(nullptr, 2600, 360, true);
+    cp3->setScale(0.1);
+    cps.append(cp3);
+    addItem(cp3);
 
     //score
     score = new Score();
@@ -259,23 +223,22 @@ void level::loadLevel3()
     //moving obstacel
     QList<QPixmap> moFrames;
     moFrames.append(QPixmap(":/assets/Ratating_Spike_8.png"));
-    MovingObject* mo = new MovingObject(timer, 3000,   3500,   moFrames);
+    MovingObject* mo = new MovingObject(timer, 2200,   2500,   moFrames);
 
-    mo->setPos(3000, 380);
+    mo->setPos(2000, 374);
     mo->setZValue(-1);
     addItem(mo);
 
     connect(timer, &QTimer::timeout, player, &Player::fall);
     connect(timer, &QTimer::timeout, player, &Player::hitCheckpoint);
     connect(timer, &QTimer::timeout, player, &Player::damage);
-    // connect(timer, &QTimer::timeout, this, &level::reduceLife);
+    //connect(timer, &QTimer::timeout, this, &level::reduceLife);
+
     connect(player, &Player::restartFromCheckpoint, this, &level::reduceLife); //added instead of timeout
     connect(timer, &QTimer::timeout, this, &level::updateLives);
-
 }
 void level::loadLevel1()
 {
-    // Clear existing level
     for(auto item : items()) {
         if(item != player) {
             removeItem(item);
@@ -288,7 +251,6 @@ void level::loadLevel1()
     lives.clear();
     cps.clear();
 
-    // Background setup
     for(int i = 0; i < 5; i++){
         QGraphicsPixmapItem *Background_layer1 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_1.png"));
         Background_layer1->setScale(3.4);
@@ -297,7 +259,7 @@ void level::loadLevel1()
         addItem(Background_layer1);
     }
 
-    // === GROUND (Full floor for safety) ===
+
     for(int i = 0; i < 100; i++){
         Block *dirt = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
         dirt->setPos(-30 + i*70, 400);
@@ -306,8 +268,7 @@ void level::loadLevel1()
         blocks.append(dirt);
     }
 
-    // === SECTION 1: Tutorial Jump (Easy) ===
-    // Low platform - closer to ground
+
     for(int i = 0; i < 4; i++){
         Block *platform1 = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
         platform1->setPos(300 + (i * 70), 340);  // Changed from 320 to 340 (closer to ground)
@@ -316,8 +277,7 @@ void level::loadLevel1()
         blocks.append(platform1);
     }
 
-    // === SECTION 2: Coin Collection Tutorial ===
-    // Ground-level coins (easy to collect)
+
     for(int i = 0; i < 3; i++){
         Coin* coin = new Coin(nullptr, i);
         coin->setPos(600 + i*100, 330);  // Changed from 300 to 330 (lower)
@@ -326,8 +286,7 @@ void level::loadLevel1()
         connect(coin, &Coin::taken, this, [this](){ emit coinTaken(1); });
     }
 
-    // === SECTION 3: Platform Jumping Tutorial ===
-    // Gentle staircase of platforms
+
     for(int i = 0; i < 3; i++){
         Block *stair = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
         stair->setPos(950 + (i * 80), 350 - (i * 25));  // Changed from 320-(i*40) to 350-(i*25) - more gradual
@@ -336,20 +295,18 @@ void level::loadLevel1()
         blocks.append(stair);
     }
 
-    // Reward coin at top of stairs - not too high
     Coin* stairCoin = new Coin(nullptr, 0);
     stairCoin->setPos(1100, 270);  // Changed from 200 to 270 (much lower)
     addItem(stairCoin);
     coins.append(stairCoin);
     connect(stairCoin, &Coin::taken, this, [this](){ emit coinTaken(1); });
 
-    // === CHECKPOINT 1 (After Tutorial) ===
-    checkpoint * cp1 = new checkpoint(nullptr, 1300, 330);  // Changed from 300 to 330 (closer to ground)
-    cp1->setScale(0.1);
-    cps.append(cp1);
-    addItem(cp1);
 
-    // === SECTION 4: First Obstacle (Single Spike) ===
+    // checkpoint * cp1 = new checkpoint(nullptr, 1300, 330);  // Changed from 300 to 330 (closer to ground)
+    // cp1->setScale(0.1);
+    // cps.append(cp1);
+    // addItem(cp1);
+
     QList<QPixmap> spikeFrame;
     spikeFrame.append(QPixmap(":/assets/Spike.png"));
     Obstacle * spike1 = new Obstacle(spikeFrame, 100, nullptr);
@@ -359,7 +316,6 @@ void level::loadLevel1()
     obstacles.append(spike1);
     addItem(spike1);
 
-    // Platform to jump over spike - lower height
     for(int i = 0; i < 2; i++){
         Block *safePlatform = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
         safePlatform->setPos(1450 + (i * 70), 320);  // Changed from 280 to 320 (lower)
@@ -368,8 +324,7 @@ void level::loadLevel1()
         blocks.append(safePlatform);
     }
 
-    // === SECTION 5: Gap Jump ===
-    // Platform before gap
+
     for(int i = 0; i < 3; i++){
         Block *preGap = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
         preGap->setPos(1750 + (i * 70), 340);  // Changed from 320 to 340 (closer to ground)
@@ -378,9 +333,6 @@ void level::loadLevel1()
         blocks.append(preGap);
     }
 
-    // Gap (no blocks)
-
-    // Platform after gap with reward
     for(int i = 0; i < 4; i++){
         Block *postGap = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
         postGap->setPos(2100 + (i * 70), 340);  // Changed from 320 to 340 (closer to ground)
@@ -389,7 +341,6 @@ void level::loadLevel1()
         blocks.append(postGap);
     }
 
-    // Reward coins after gap
     for(int i = 0; i < 2; i++){
         Coin* gapCoin = new Coin(nullptr, i);
         gapCoin->setPos(2150 + i*100, 290);  // Changed from 250 to 290 (lower)
@@ -398,24 +349,22 @@ void level::loadLevel1()
         connect(gapCoin, &Coin::taken, this, [this](){ emit coinTaken(1); });
     }
 
-    // === SECTION 6: First Enemy ===
-    enemy *enemy1 = new enemy(nullptr, 2450, 300);  // Changed from 250 to 300
+
+    enemy *enemy1 = new enemy(nullptr, 2450, 300);
     enemy1->setBlocks(blocks);
-    enemy1->setBounds(2400, 2700);  // Patrol range
+    enemy1->setBounds(2400, 2700);
     addItem(enemy1);
     enemies.append(enemy1);
 
-    // Safe platform to observe enemy
+
     for(int i = 0; i < 3; i++){
         Block *observePlatform = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
-        observePlatform->setPos(2550 + (i * 70), 320);  // Changed from 280 to 320 (lower)
+        observePlatform->setPos(2550 + (i * 70), 320);
         observePlatform->setScale(1.5);
         addItem(observePlatform);
         blocks.append(observePlatform);
     }
 
-    // === SECTION 7: Multiple Obstacles ===
-    // Two spikes with safe path
     for(int i = 0; i < 2; i++){
         Obstacle * spike = new Obstacle(spikeFrame, 100, nullptr);
         spike->setPos(2850 + i*200, 350);
@@ -425,10 +374,9 @@ void level::loadLevel1()
         addItem(spike);
     }
 
-    // Platforms to navigate spikes - lower
     for(int i = 0; i < 2; i++){
         Block *navPlatform = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
-        navPlatform->setPos(2900 + (i * 70), 320);  // Changed from 280 to 320 (lower)
+        navPlatform->setPos(2900 + (i * 70), 320);
         navPlatform->setScale(1.5);
         addItem(navPlatform);
         blocks.append(navPlatform);
@@ -436,19 +384,17 @@ void level::loadLevel1()
 
     for(int i = 0; i < 2; i++){
         Block *navPlatform2 = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
-        navPlatform2->setPos(3100 + (i * 70), 320);  // Changed from 280 to 320 (lower)
+        navPlatform2->setPos(3100 + (i * 70), 320);
         navPlatform2->setScale(1.5);
         addItem(navPlatform2);
         blocks.append(navPlatform2);
     }
 
-    // === CHECKPOINT 2 (Before Final Challenge) ===
-    checkpoint * cp2 = new checkpoint(nullptr, 3300, 330);  // Changed from 300 to 330
-    cp2->setScale(0.1);
-    cps.append(cp2);
-    addItem(cp2);
+    // checkpoint * cp2 = new checkpoint(nullptr, 3300, 330);
+    // cp2->setScale(0.1);
+    // cps.append(cp2);
+    // addItem(cp2);
 
-    // === SECTION 8: Final Challenge - Moving Obstacle ===
     QList<QPixmap> moFrames;
     moFrames.append(QPixmap(":/assets/Ratating_Spike_8.png"));
     MovingObject* mo = new MovingObject(timer, 3500, 3900, moFrames);
@@ -456,25 +402,22 @@ void level::loadLevel1()
     mo->setZValue(-1);
     addItem(mo);
 
-    // Platform path around moving obstacle
     for(int i = 0; i < 2; i++){
         Block *finalPlatform = new Block(QPixmap(":/assets/Dirt_Block.png"), nullptr);
-        finalPlatform->setPos(3600 + (i * 70), 300);  // Changed from 250 to 300 (lower)
+        finalPlatform->setPos(3600 + (i * 70), 300);
         finalPlatform->setScale(1.5);
         addItem(finalPlatform);
         blocks.append(finalPlatform);
     }
 
-    // Victory coins - lower and more accessible
     for(int i = 0; i < 5; i++){
         Coin* victoryCoin = new Coin(nullptr, i);
-        victoryCoin->setPos(3850 + i*60, 280 - i*15);  // Changed from 200-i*20 to 280-i*15 (lower, less steep)
+        victoryCoin->setPos(3850 + i*60, 280 - i*15);
         addItem(victoryCoin);
         coins.append(victoryCoin);
         connect(victoryCoin, &Coin::taken, this, [this](){ emit coinTaken(1); });
     }
 
-    // === PLAYER SETUP ===
     if(!player){
         player = new Player();
         player->setPos(50, 200);
@@ -484,7 +427,7 @@ void level::loadLevel1()
         player->setPos(50, 200);
     }
 
-    // === LIVES UI ===
+
     Life * life1 = new Life(nullptr, 0);
     Life * life2 = new Life(nullptr, 50);
     Life * life3 = new Life(nullptr, 100);
@@ -501,18 +444,15 @@ void level::loadLevel1()
     life2->setFlag(QGraphicsItem::ItemIgnoresTransformations);
     life3->setFlag(QGraphicsItem::ItemIgnoresTransformations);
 
-    // === SCORE SETUP ===
     score = new Score();
     score->setZValue(3);
     addItem(score);
 
-    // === CONNECTIONS ===
     connect(player, &Player::restartLevel, this, &level::restartLevel);
     connect(player, &Player::restartFromCheckpoint, this, &level::restartFromCheckpoint);
     connect(this, &level::coinTaken, score, &Score::increase);
     connect(player, &Player::restartFromCheckpoint, this, &level::reduceLife);
 
-    // === TIMER SETUP ===
     if(timer) {
         timer->stop();
         timer->disconnect();
@@ -532,11 +472,214 @@ level::level(QObject *parent, int number): QGraphicsScene(parent)
 {
     this->setSceneRect(0, 0, 1080*5, 500);
     if (number == 1)
+        loadLevel1();
+    else if(number == 2)
+        loadLevel2();
+    else if(number == 3)
         loadLevel3();
+
 
 }
 
+void level::loadLevel2()
+{
+    for (auto item : items()) {
+        Player * player = dynamic_cast<Player *>(item);
+        if(!player){
+            removeItem(item);
+            delete item;
+        }
+    }
 
+    if (timer) {
+        timer->stop();
+        timer->disconnect();
+        delete timer;
+        timer = nullptr;
+    }
+
+    blocks.clear();
+    obstacles.clear();
+    enemies.clear();
+    coins.clear();
+    lives.clear();
+
+    if(player->getLives() <= 0) {
+        emit gameOver();
+    }
+
+    player->setLives(3);
+    player->setPos(30, 200);
+    player->setLastcheckpoint(QPointF(30, 200));
+    player->setZValue(1);
+
+
+    player->xVelocity = 0;
+    player->yVelocity = 0;
+
+    timer = new QTimer(this);
+    timer->start(16);
+
+
+    for(int i = 0; i < 5; i ++){
+        QGraphicsPixmapItem *Background_layer1 = new QGraphicsPixmapItem(QPixmap(":/assets/3 Background/Day/Background.png"));
+
+        Background_layer1->setScale(1.7);
+        Background_layer1->setX(i*900);
+        Background_layer1->setZValue(-3);
+        addItem(Background_layer1);
+    }
+
+    Block *dirt = new Block(QPixmap(":/assets/1 Tiles/BayTile_05.png"), nullptr, 470);
+    dirt->setPos(30, 400);
+    dirt->setScale(1);
+    addItem(dirt);
+    blocks.append(dirt);
+    for(int i = 0; i < 40; i++){
+        Block *dirt = new Block(QPixmap(":/assets/1 Tiles/BayTile_06.png"), nullptr, 470);
+        dirt->setPos(50 + i*30, 400);
+        dirt->setScale(1);
+        addItem(dirt);
+        blocks.append(dirt);
+    }
+    for(int i = 0; i < 2; i ++){
+        Block * block = new Block(QPixmap(":/assets/1 Tiles/BayTile_19.png"), nullptr, 470);
+        block->setPos(300 + i*400, 370);
+        block->setScale(1);
+        addItem(block);
+        blocks.append(block);
+    }
+
+    Block * block2 = new Block(QPixmap(":/assets/1 Tiles/BayTile_10.png"), nullptr, 470);
+    block2->setPos(1250 , 400);
+    block2->setScale(1);
+    addItem(block2);
+    blocks.append(block2);
+
+    Block *block4 = new Block(QPixmap(":/assets/1 Tiles/BayTile_05.png"), nullptr, 470);
+    block4->setPos(1400, 400);
+    dirt->setScale(1);
+    addItem(block4);
+    blocks.append(block4);
+
+    for(int i = 0; i < 40; i++){
+        Block *dirt = new Block(QPixmap(":/assets/1 Tiles/BayTile_06.png"), nullptr, 470);
+        dirt->setPos(1430 + i*30, 400);
+        dirt->setScale(1);
+        addItem(dirt);
+        blocks.append(dirt);
+    }
+
+    Block * block5 = new Block(QPixmap(":/assets/1 Tiles/BayTile_10.png"), nullptr, 470);
+    block5->setPos(2630 , 400);
+    block5->setScale(1);
+    addItem(block5);
+    blocks.append(block5);
+
+    for(int i = 0; i < 2; i++){
+        QList<QPixmap> frame;
+        frame.append(QPixmap(":/assets/FS1.png"));
+        Obstacle * obs = new Obstacle(frame, 100, nullptr);
+        obs->setPos(1500 + i*200, 370);
+        obs->setScale(0.5);
+        obstacles.append(obs);
+        addItem(obs);
+    }
+
+    for(int i = 0; i < 2; i++){
+        QList<QPixmap> frame;
+        frame.append(QPixmap(":/assets/FS1.png"));
+        Obstacle * obs = new Obstacle(frame, 100, nullptr);
+        obs->setPos(2000 + i*200, 370);
+        obs->setScale(0.5);
+        obstacles.append(obs);
+        addItem(obs);
+    }
+
+    QList<QPixmap> frame1;
+    frame1.append(QPixmap(":/assets/UDS.png"));
+    Obstacle * uds = new Obstacle(frame1, 100, nullptr);
+    uds->setPos(1600, 230);
+    uds->setScale(0.5);
+    obstacles.append(uds);
+    addItem(uds);
+
+    QList<QPixmap> frame;
+    frame.append(QPixmap(":/assets/LemonGrap.png"));
+    MovingObject * mo = new MovingObject(timer,330,670,frame,100,nullptr );
+    mo->setPos(400, 323);
+    mo->setScale(0.27);
+    obstacles.append(mo);
+    addItem(mo);
+
+    QList<QPixmap> frame3;
+    frame3.append(QPixmap(":/assets/RS1.png"));
+    MovingObject * RS1 = new MovingObject(timer,2000,2300,frame3,100,nullptr );
+    RS1->setPos(2000, 300);
+    RS1->setScale(0.27);
+    obstacles.append(RS1);
+    addItem(RS1);
+
+
+    if(!player){
+        player = new Player();
+        player->setPos(30, 200);
+        addItem(player);
+    }
+
+    //lives
+    Life * life1 = new Life(nullptr, 0);
+    Life * life2 = new Life(nullptr, 50);
+    Life * life3 = new Life(nullptr, 100);
+
+    lives.append(life1);
+    lives.append(life2);
+    lives.append(life3);
+
+    addItem(life1);
+    addItem(life2);
+    addItem(life3);
+
+
+    //score
+    score = new Score();
+    score->setZValue(3);
+    addItem(score);
+
+    connect(timer, &QTimer::timeout, player, &Player::fall);
+    connect(timer, &QTimer::timeout, player, &Player::hitCheckpoint);
+    connect(timer, &QTimer::timeout, player, &Player::damage);
+    connect(timer, &QTimer::timeout, this, &level::reduceLife);
+    connect(timer, &QTimer::timeout, this, &level::updateLives);
+
+    connect(player, &Player::restartLevel, this, &level::restartLevel);
+    connect(player, &Player::restartFromCheckpoint, this, &level::restartFromCheckpoint);
+    connect(this, &level::coinTaken, score, &Score::increase);
+}
+
+level::~level()
+{
+    for (auto item : items()) {
+        Player * player = dynamic_cast<Player *>(item);
+        if(!player){
+            removeItem(item);
+            delete item;
+        }
+
+        if (timer) {
+            timer->stop();
+            timer->disconnect();
+            delete timer;
+            timer = nullptr;
+        }
+
+        blocks.clear();
+        obstacles.clear();
+        enemies.clear();
+        coins.clear();
+        lives.clear();
+    }
+}
 
 void level::reduceLife()
 {
@@ -562,3 +705,5 @@ void level::updateLives()
         }
     }
 }
+
+

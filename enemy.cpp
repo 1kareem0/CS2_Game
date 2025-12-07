@@ -45,7 +45,11 @@ bool enemy::onBlock()
     for(auto item : collisions){
         Block * block = dynamic_cast<Block *>(item);
         if(block){
-            return true;
+            QRectF enemyR = this->boundingRect().translated(this->pos());
+            QRectF blockR = block->boundingRect().translated(block->pos());
+            if(enemyR.bottom() <= blockR.top() + block->getBlockTop()){
+                return true;
+            }
         }
     }
     return false;
