@@ -24,12 +24,19 @@ void level::restartLevel() {
     coins.clear();
     lives.clear();
 
-    loadLevel1();
+    if(player->getLives() <= 0) {
+        emit gameOver();
+    }
 
+    loadLevel1();
     player->setLives(3);
     player->setPos(30, 200);
     player->setLastcheckpoint(QPointF(30, 200));
     player->setZValue(1);
+
+
+    player->xVelocity = 0;
+    player->yVelocity = 0;
 }
 
 
@@ -303,25 +310,25 @@ void level::loadLevel1()
     // Background and Scene setup
 
     for(int i = 0; i < 5; i ++){
-    QGraphicsPixmapItem *Background_layer1 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_1.png"));
-    QGraphicsPixmapItem *Background_layer2 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_2.png"));
-    QGraphicsPixmapItem *Background_layer3 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_3.png"));
+        QGraphicsPixmapItem *Background_layer1 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_1.png"));
+        QGraphicsPixmapItem *Background_layer2 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_2.png"));
+        QGraphicsPixmapItem *Background_layer3 = new QGraphicsPixmapItem(QPixmap(":/assets/background_layer_3.png"));
 
-    Background_layer1->setScale(3.4);
-    Background_layer2->setScale(3.4);
-    Background_layer3->setScale(3.4);
+        Background_layer1->setScale(3.4);
+        Background_layer2->setScale(3.4);
+        Background_layer3->setScale(3.4);
 
-    Background_layer1->setX(i*1088);
-    Background_layer2->setX(i*1088);
-    Background_layer3->setX(i*1088);
+        Background_layer1->setX(i*1088);
+        Background_layer2->setX(i*1088);
+        Background_layer3->setX(i*1088);
 
-    Background_layer1->setZValue(-3);
-    Background_layer2->setZValue(-2);
-    Background_layer3->setZValue(-1);
+        Background_layer1->setZValue(-3);
+        Background_layer2->setZValue(-2);
+        Background_layer3->setZValue(-1);
 
-    addItem(Background_layer1);
-    addItem(Background_layer2);
-    addItem(Background_layer3);
+        addItem(Background_layer1);
+        addItem(Background_layer2);
+        addItem(Background_layer3);
     }
 
     for(int i = 0; i < 40; i++){
@@ -361,6 +368,7 @@ void level::loadLevel1()
     if(!player){
         player = new Player();
         player->setPos(30, 200);
+        player->setLives(3);
         addItem(player);
     }
 
@@ -466,7 +474,8 @@ void level::loadLevel1()
     connect(timer, &QTimer::timeout, player, &Player::fall);
     connect(timer, &QTimer::timeout, player, &Player::hitCheckpoint);
     connect(timer, &QTimer::timeout, player, &Player::damage);
-    connect(timer, &QTimer::timeout, this, &level::reduceLife);
+   // connect(timer, &QTimer::timeout, this, &level::reduceLife);
+    connect(player, &Player::restartFromCheckpoint, this, &level::reduceLife); //added instead of timeout
     connect(timer, &QTimer::timeout, this, &level::updateLives);
 }
 
@@ -658,12 +667,16 @@ level::~level()
 
 void level::reduceLife()
 {
-     if (lives.isEmpty()) return;
+    if (!lives.isEmpty() && lives.size() > player->getLives()) {
+        delete lives.last();
+        lives.pop_back();
+    }
 
-     if (!lives.isEmpty() && lives.size() > player->getLives()) {
-         delete lives.last();
-         lives.pop_back();
-     }
+    // Check if player has run out of lives (not if lives list is empty)
+    if (player->getLives() <= 0) {
+        qDebug() << "Player lives reached 0, emitting gameOver";
+        emit gameOver();
+    }
 }
 
 void level::updateLives()
@@ -671,8 +684,8 @@ void level::updateLives()
     int baseX = player->x() - 350;
 
     if(player->x() > 400){
-    for (int i = 0; i < lives.size(); i++) {
-        lives[i]->setPos(baseX + i * 50, 10);
+        for (int i = 0; i < lives.size(); i++) {
+            lives[i]->setPos(baseX + i * 50, 10);
         }
     }
 }

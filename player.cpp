@@ -15,7 +15,7 @@ QPointF Player::getLastcheckpoint() const
 
 int Player::getTotalCoins()
 {
-      return totalCoins;
+    return totalCoins;
 }
 
 void Player::addCoins(int amount)
@@ -73,6 +73,7 @@ bool Player::onBlock()
         if(block){
             QRectF playerR = this->boundingRect().translated(this->pos());
             QRectF blockR = block->boundingRect().translated(block->pos());
+
             if(playerR.bottom() <= blockR.top() + block->getBlockTop()){
             return true;
             }
@@ -146,15 +147,15 @@ void Player::move_left()
             xVelocity = maxspeed;
         }
         setPos(x() - xVelocity, y());
-        }
+    }
     else if(!running_backward && !running_forward){
         xVelocity -= acceleration;
         if(xVelocity < 0){
             xVelocity = 0;
         }
-         setPos(x() - xVelocity, y());
+        setPos(x() - xVelocity, y());
     }
-        emit CenterOnPlayer();
+    emit CenterOnPlayer();
 }
 
 bool Player::hitObstacle()
@@ -174,12 +175,12 @@ void Player::damage()
 {
     if(hitObstacle() || pos().y() > 460){
         lives -= 1;
-        if(lives == 0){
-            emit restartLevel();
+
+        if(lives <= 0){
+            emit restartLevel();  // This will trigger game over
         }
-        else
-        {
-                emit restartFromCheckpoint();
+        else {
+            emit restartFromCheckpoint();
         }
     }
 }
@@ -211,7 +212,7 @@ void Player::keyPressEvent(QKeyEvent *event)
     else if(event->key() == Qt::Key_Left){
         running_backward = true;
     }
-    else if(event->key() == Qt::Key_Space){
+    else if(event->key() == Qt::Key_R){
         emit restartLevel();
     }
     else{
@@ -228,4 +229,3 @@ void Player::keyReleaseEvent(QKeyEvent *event)
         running_backward = false;
     }
 }
-

@@ -57,5 +57,3 @@ Obstacle::Obstacle(const QPixmap& pixmap, QGraphicsItem* parent) : QGraphicsPixm
 {
     setPixmap(QPixmap(pixmap));
 }
-
-
