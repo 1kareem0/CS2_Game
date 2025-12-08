@@ -55,6 +55,8 @@ signals:
     void restartFromCheckpoint();
     void CenterOnPlayer();
     void showGameOver();
+    void goToLevel2();
+    void goToLevel3();
 
 public slots:
     bool onBlock();

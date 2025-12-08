@@ -197,6 +197,12 @@ void Player::hitCheckpoint()
         else if(cp && cp->getIsEnd()){
             lastcheckpoint = QPointF(30, 300);
             currentLevel++;
+            if(currentLevel == 2){
+                emit goToLevel3();
+            }
+            else if(currentLevel == 3){
+                //
+            }
         }
     }
 }

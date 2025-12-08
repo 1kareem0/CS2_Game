@@ -2,9 +2,18 @@
 
 MovingObject::MovingObject(QTimer* gameTimer,  int left,  int right,  const QList<QPixmap>& frames,  int frameInterval,  QGraphicsItem* parent)
     : Obstacle(frames, frameInterval, parent),
-    leftLimit(left), rightLimit(right)
+    leftLimit(left), rightLimit(right),
+    timer(gameTimer)
 {
-    connect(gameTimer, &QTimer::timeout, this, &MovingObject::updateMovement);
+    connect(timer, &QTimer::timeout, this, &MovingObject::updateMovement);
+}
+
+MovingObject::~MovingObject()
+{
+    if (timer) {
+        timer->disconnect(this);
+        timer = nullptr;
+    }
 }
 
 

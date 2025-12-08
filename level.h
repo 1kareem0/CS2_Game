@@ -19,6 +19,7 @@ class level : public QGraphicsScene
 
 public:
     QTimer * timer;
+    QTimer * nextLevelTimer;
     Player * player;
     Score * score;
     QList<Block*> blocks;
@@ -33,6 +34,9 @@ public slots:
     void restartLevel();
     void restartFromCheckpoint();
     void reduceLife();
+    void goToLevel2();
+    void goToLevel3();
+    //void NexLevel();
 
 signals:
     void CenterOnPlayer();
@@ -40,14 +44,18 @@ signals:
     void gameOver();
 
 public:
-    level(QObject *parent = nullptr, int number  =1);
+    level(QObject* parent, int number, Player* p);
     void loadLevel1();
     bool isCheckpoint();
     void updateLives();
     void loadLevel2();
     void loadLevel3();
+    void clearLevel();
+    void cleanup();
 
     ~ level();
+    void addPlayer(Player *p);
+    void NextLevel();
 };
 
 #endif // LEVEL_H

@@ -8,6 +8,8 @@ class MovingObject : public Obstacle
 {
     Q_OBJECT
 
+    QTimer * timer;
+
     float velocity = 0;
     float acceleration = 0.25;
     float maxSpeed = 3;
@@ -20,6 +22,7 @@ class MovingObject : public Obstacle
 public:
     MovingObject(QTimer* gameTimer, int leftLimit, int rightLimit, const QList<QPixmap>& frames, int frameInterval = 100, QGraphicsItem* parent = nullptr);
 
+    ~ MovingObject();
 public slots:
     void updateMovement();
 };

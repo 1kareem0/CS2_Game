@@ -7,19 +7,22 @@
 class Game : public QGraphicsView
 {
     Q_OBJECT
+public:
+    Game(QWidget *parent = nullptr);
+
+    Player* player;          // global player
+    level* currentLevel;     // current scene
+
+    void goToLevel(int index);
+    void CenterOnPlayer();
+
+    void goToNextLevel();
+private slots:
+    void showGameOver();
 
 private:
-    level * currentLevel;
-    bool isGameOver; //flag for preventing any move
-
-public:
-    Game(QWidget* parent = nullptr);
-
-    void updateLivesDisplay();
-    void LevelComplete();
-public slots:
-    void CenterOnPlayer();
-    void showGameOver();
+    bool isGameOver = false;
 };
+
 
 #endif // GAME_H
